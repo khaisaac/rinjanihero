@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { Mountain, CheckCircle2, TrendingUp, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
+import { parseArray } from "@/utils/jsonParser";
 
 export default function SembalunRouteSection() {
   const { routes, packages } = useCMSStore();
-  const sembalunRoute = routes.find((r) => r.id === "sembalun");
-  const sembalunPackages = packages.filter((p) => p.route === "sembalun");
+  const sembalunRoute = (Array.isArray(routes) ? routes : []).find((r) => r.id === "sembalun");
+  const sembalunPackages = (Array.isArray(packages) ? packages : []).filter((p) => p.route === "sembalun");
 
   if (!sembalunRoute) return null;
 
@@ -43,7 +44,7 @@ export default function SembalunRouteSection() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-[#D4A017] uppercase">Elevation Profile</h4>
-                  <p className="text-xs text-gray-200 font-semibold mt-0.5">Start: 1,156m ➔ Summit: 3,726m</p>
+                  <p className="text-sm font-black">1,100m → 3,726m Summit</p>
                 </div>
               </div>
             </div>
@@ -57,7 +58,7 @@ export default function SembalunRouteSection() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#122826] tracking-tight leading-tight">
-              {sembalunRoute.name} — <span className="text-gradient font-black">{sembalunRoute.subtitle}</span>
+              {sembalunRoute.name} — <span className="text-[#18979B]">{sembalunRoute.subtitle}</span>
             </h2>
 
             <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
@@ -66,7 +67,7 @@ export default function SembalunRouteSection() {
 
             {/* Highlights Grid */}
             <div className="space-y-3 pt-2">
-              {sembalunRoute.highlights.map((item, idx) => (
+              {parseArray(sembalunRoute.highlights).map((item: string, idx: number) => (
                 <div key={idx} className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-[#18979B]/15 text-[#18979B] flex items-center justify-center shrink-0 mt-0.5">
                     <CheckCircle2 className="w-4 h-4" />

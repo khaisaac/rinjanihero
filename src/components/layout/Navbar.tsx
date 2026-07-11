@@ -32,7 +32,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const popularPackages = packages.filter((p) => p.isPopular || p.isFeatured).slice(0, 4);
+  const popularPackages = (Array.isArray(packages) ? packages : []).filter((p) => p.isPopular || p.isFeatured).slice(0, 4);
 
   return (
     <header

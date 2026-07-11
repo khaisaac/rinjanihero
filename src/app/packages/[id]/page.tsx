@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { initialTrekkingPackages } from "@/data/mockData";
+import { parseArray } from "@/utils/jsonParser";
 import PackageDetailClient from "@/components/package/PackageDetailClient";
 
 interface PageProps {
@@ -50,7 +51,7 @@ export default async function PackageDetailPage({ params }: PageProps) {
     name: pkg.title,
     description: pkg.overview,
     touristType: ["Adventure Tourism", "Eco Tourism", "Mountain Climbing"],
-    itinerary: pkg.itinerary.map((day) => ({
+    itinerary: parseArray(pkg.itinerary).map((day: any) => ({
       "@type": "Itinerary",
       day: day.day,
       name: day.title,

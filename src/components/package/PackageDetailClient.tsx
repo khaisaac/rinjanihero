@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { parseArray } from "@/utils/jsonParser";
 import {
   Compass,
   Clock,
@@ -135,7 +136,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
           </div>
 
           <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4 h-full">
-            {pkg.galleryImages.slice(1, 3).map((img, idx) => (
+            {parseArray(pkg.galleryImages).slice(1, 3).map((img: string, idx: number) => (
               <div
                 key={idx}
                 onClick={() => setSelectedImage(img)}
@@ -235,7 +236,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
             {/* Tab 1: Itinerary */}
             {activeTab === "itinerary" && (
               <div className="space-y-6 animate-in fade-in duration-200">
-                {pkg.itinerary.map((day) => (
+                {parseArray(pkg.itinerary).map((day: any) => (
                   <div key={day.day} className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 relative overflow-hidden">
                     <div className="absolute top-0 left-0 bottom-0 w-3 bg-[#18979B]" />
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4">
@@ -261,7 +262,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
 
                     <div className="mt-4 pt-4 border-t border-gray-100 space-y-1.5">
                       <span className="text-xs font-bold uppercase tracking-wider text-[#D4A017] block">Day {day.day} Highlights:</span>
-                      {day.highlights.map((hl, i) => (
+                      {parseArray(day.highlights).map((hl: string, i: number) => (
                         <div key={i} className="flex items-center gap-2 text-xs text-gray-700 font-medium">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#18979B]" />
                           <span>{hl}</span>
@@ -282,7 +283,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                     <span>What is Included (All-Inclusive)</span>
                   </h4>
                   <ul className="space-y-3">
-                    {pkg.includes.map((inc, i) => (
+                    {parseArray(pkg.includes).map((inc: string, i: number) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{inc}</span>
@@ -297,7 +298,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                     <span>What is Excluded</span>
                   </h4>
                   <ul className="space-y-3">
-                    {pkg.excludes.map((exc, i) => (
+                    {parseArray(pkg.excludes).map((exc: string, i: number) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
                         <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                         <span>{exc}</span>
@@ -322,7 +323,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {pkg.thingsToBring.map((item, idx) => {
+                  {parseArray(pkg.thingsToBring).map((item: string, idx: number) => {
                     const checked = !!checkedGear[idx];
                     return (
                       <div
@@ -352,7 +353,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
             {/* Tab 4: FAQ */}
             {activeTab === "faq" && (
               <div className="space-y-4 animate-in fade-in duration-200">
-                {pkg.faq.map((f, i) => (
+                {parseArray(pkg.faq).map((f: any, i: number) => (
                   <div key={i} className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 space-y-2">
                     <h5 className="text-base font-bold text-[#122826] flex items-center gap-2">
                       <HelpCircle className="w-4 h-4 text-[#18979B] shrink-0" />

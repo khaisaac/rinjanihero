@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { Compass, CheckCircle2, ArrowRight, Sunset } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
+import { parseArray } from "@/utils/jsonParser";
 
 export default function SenaruRouteSection() {
   const { routes, packages } = useCMSStore();
-  const senaruRoute = routes.find((r) => r.id === "senaru");
-  const senaruPackages = packages.filter((p) => p.route === "senaru");
+  const senaruRoute = (Array.isArray(routes) ? routes : []).find((r) => r.id === "senaru");
+  const senaruPackages = (Array.isArray(packages) ? packages : []).filter((p) => p.route === "senaru");
 
   if (!senaruRoute) return null;
 
@@ -32,7 +33,7 @@ export default function SenaruRouteSection() {
 
             {/* Highlights Grid */}
             <div className="space-y-3 pt-2">
-              {senaruRoute.highlights.map((item, idx) => (
+              {parseArray(senaruRoute.highlights).map((item: string, idx: number) => (
                 <div key={idx} className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-[#18979B]/15 text-[#18979B] flex items-center justify-center shrink-0 mt-0.5">
                     <CheckCircle2 className="w-4 h-4" />

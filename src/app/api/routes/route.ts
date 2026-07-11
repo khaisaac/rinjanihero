@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { routes } from "@/db/schema";
+import { parseArray } from "@/utils/jsonParser";
+
+const normalizeRoute = (route: any) => ({
+  ...route,
+  highlights: parseArray(route.highlights),
+});
 
 export async function GET() {
   try {
-    const data = await db.select().from(routes);
+    const rawData = await db.select().from(routes);
+    const data = rawData.map(normalizeRoute);
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

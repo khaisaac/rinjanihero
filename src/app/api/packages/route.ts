@@ -1,10 +1,23 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { trekkingPackages } from "@/db/schema";
+import { parseArray } from "@/utils/jsonParser";
+
+const normalizePackage = (pkg: any) => ({
+  ...pkg,
+  galleryImages: parseArray(pkg.galleryImages),
+  includes: parseArray(pkg.includes),
+  excludes: parseArray(pkg.excludes),
+  thingsToBring: parseArray(pkg.thingsToBring),
+  itinerary: parseArray(pkg.itinerary),
+  faq: parseArray(pkg.faq),
+  relatedPackageIds: parseArray(pkg.relatedPackageIds),
+});
 
 export async function GET() {
   try {
-    const data = await db.select().from(trekkingPackages);
+    const rawData = await db.select().from(trekkingPackages);
+    const data = rawData.map(normalizePackage);
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

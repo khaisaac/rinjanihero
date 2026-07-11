@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { parseArray, parseJson } from "@/utils/jsonParser";
 import {
   TrekkingPackage,
   TransportationService,
@@ -28,6 +29,33 @@ import {
   initialVouchers,
   initialBookings,
 } from "@/data/mockData";
+
+const normalizePackage = (pkg: any): TrekkingPackage => ({
+  ...pkg,
+  galleryImages: parseArray(pkg.galleryImages),
+  includes: parseArray(pkg.includes),
+  excludes: parseArray(pkg.excludes),
+  thingsToBring: parseArray(pkg.thingsToBring),
+  itinerary: parseArray(pkg.itinerary),
+  faq: parseArray(pkg.faq),
+  relatedPackageIds: parseArray(pkg.relatedPackageIds),
+});
+
+const normalizeRoute = (route: any): RouteInfo => ({
+  ...route,
+  highlights: parseArray(route.highlights),
+});
+
+const normalizeBlog = (blog: any): BlogPost => ({
+  ...blog,
+  tags: parseArray(blog.tags),
+});
+
+const normalizeETicket = (ticket: any): ETicketOption => ({
+  ...ticket,
+  features: parseArray(ticket.features),
+  requirements: parseArray(ticket.requirements),
+});
 
 export interface BookingPrefill {
   serviceType: ServiceType;
@@ -159,15 +187,15 @@ export const useCMSStore = create<CMSStoreState>()(
 
           set((state) => ({
             settings: settingsRes?.data || state.settings,
-            routes: routesRes?.data?.length ? routesRes.data : state.routes,
-            packages: packagesRes?.data?.length ? packagesRes.data : state.packages,
+            routes: routesRes?.data?.length ? routesRes.data.map(normalizeRoute) : state.routes,
+            packages: packagesRes?.data?.length ? packagesRes.data.map(normalizePackage) : state.packages,
             transportation: transportationRes?.data?.length ? transportationRes.data : state.transportation,
-            eTickets: eTicketsRes?.data?.length ? eTicketsRes.data : state.eTickets,
+            eTickets: eTicketsRes?.data?.length ? eTicketsRes.data.map(normalizeETicket) : state.eTickets,
             testimonials: testimonialsRes?.data?.length ? testimonialsRes.data : state.testimonials,
             gallery: galleryRes?.data?.length ? galleryRes.data : state.gallery,
             faqs: faqsRes?.data?.length ? faqsRes.data : state.faqs,
-            blogPosts: blogsRes?.data?.length ? blogsRes.data : state.blogPosts,
-            blogs: blogsRes?.data?.length ? blogsRes.data : state.blogs,
+            blogPosts: blogsRes?.data?.length ? blogsRes.data.map(normalizeBlog) : state.blogPosts,
+            blogs: blogsRes?.data?.length ? blogsRes.data.map(normalizeBlog) : state.blogs,
             vouchers: vouchersRes?.data?.length ? vouchersRes.data : state.vouchers,
             bookings: bookingsRes?.data?.length ? bookingsRes.data : state.bookings,
           }));

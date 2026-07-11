@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Ticket, ShieldCheck, CheckCircle2, ArrowRight, QrCode } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 import { ETicketOption } from "@/types/cms";
+import { parseArray } from "@/utils/jsonParser";
 
 export default function ETicketSection() {
   const router = useRouter();
@@ -73,7 +74,7 @@ export default function ETicketSection() {
 
                 <div className="space-y-3 pt-3 border-t border-white/10">
                   <span className="text-xs font-bold text-[#D4A017] uppercase tracking-wider block">Key Features:</span>
-                  {ticket.features.map((feat, idx) => (
+                  {parseArray(ticket.features).map((feat: string, idx: number) => (
                     <div key={idx} className="flex items-start gap-2.5 text-xs text-gray-200">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{feat}</span>
@@ -83,7 +84,7 @@ export default function ETicketSection() {
 
                 <div className="space-y-2 pt-2">
                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Requirements:</span>
-                  {ticket.requirements.map((req, idx) => (
+                  {parseArray(ticket.requirements).map((req: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-2 text-xs text-gray-400">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D4A017]" />
                       <span>{req}</span>
