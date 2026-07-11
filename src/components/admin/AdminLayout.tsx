@@ -1,0 +1,207 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Compass,
+  CalendarCheck,
+  Tag,
+  FileText,
+  Settings,
+  ShieldCheck,
+  Menu,
+  X,
+  LogOut,
+  Bell,
+  Search,
+  ExternalLink,
+} from "lucide-react";
+import { useCMSStore } from "@/store/cmsStore";
+
+interface AdminLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  subtitle?: string;
+}
+
+export default function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
+  const pathname = usePathname();
+  const { bookings } = useCMSStore();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [role, setRole] = useState<"Super Admin" | "Basecamp Manager">("Super Admin");
+
+  const pendingCount = bookings.filter((b) => b.paymentStatus === "Pending").length;
+
+  const navItems = [
+    { name: "Overview Analytics", href: "/admin", icon: LayoutDashboard },
+    { name: "Bookings & Permits", href: "/admin/bookings", icon: CalendarCheck, badge: pendingCount > 0 ? pendingCount : undefined },
+    { name: "Packages & Routes", href: "/admin/packages", icon: Compass },
+    { name: "Vouchers & Promos", href: "/admin/vouchers", icon: Tag },
+    { name: "SEO Blogs & Articles", href: "/admin/blogs", icon: FileText },
+    { name: "System Settings", href: "/admin/settings", icon: Settings },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#F8FAF9] flex">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#122826] text-white flex flex-col justify-between transition-transform duration-300 lg:static lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-6 space-y-8">
+          {/* Brand Logo */}
+          <div className="flex items-center justify-between">
+            <Link href="/admin" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#18979B] to-[#D4A017] flex items-center justify-center font-black text-white text-xl shadow">
+                RH
+              </div>
+              <div>
+                <span className="text-base font-extrabold tracking-tight block">RINJANI HERO</span>
+                <span className="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase block">CMS CONTROL PANEL</span>
+              </div>
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden p-2 text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Role Switcher */}
+          <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+            <div className="flex items-center justify-between text-xs font-semibold text-gray-300">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>Current Role</span>
+              </span>
+              <span className="text-[10px] bg-[#18979B] px-2 py-0.5 rounded text-white font-bold uppercase">
+                Active
+              </span>
+            </div>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as any)}
+              className="w-full bg-[#122826] border border-white/20 rounded-xl px-3 py-2 text-xs font-bold text-[#D4A017] focus:outline-none"
+            >
+              <option value="Super Admin">Super Admin (Full Access)</option>
+              <option value="Basecamp Manager">Basecamp Manager (Operations)</option>
+            </select>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="space-y-1.5">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold transition ${
+                    isActive
+                      ? "bg-[#18979B] text-white shadow-lg"
+                      : "text-gray-300 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-5 h-5" />
+                    <span>{item.name}</span>
+                  </div>
+                  {item.badge !== undefined && (
+                    <span className="bg-[#D4A017] text-[#122826] text-[10px] font-black px-2 py-0.5 rounded-full shadow">
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Footer User Profile */}
+        <div className="p-6 border-t border-white/10 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-[#D4A017] text-[#122826] flex items-center justify-center font-bold text-sm">
+                SA
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white block">Senaru Director</span>
+                <span className="text-[10px] text-gray-400">rinjanihero@gmail.com</span>
+              </div>
+            </div>
+            <Link href="/" target="_blank" className="p-2 text-gray-400 hover:text-white bg-white/5 rounded-xl transition" title="View Live Website">
+              <ExternalLink className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Top Header */}
+        <header className="bg-white border-b border-gray-200 h-20 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2.5 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-lg sm:text-2xl font-extrabold text-[#122826]">{title}</h1>
+              {subtitle && <p className="text-xs text-gray-500 hidden sm:block">{subtitle}</p>}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 bg-[#F8FAF9] border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-500 w-64">
+              <Search className="w-4 h-4 text-gray-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="Search orders, permits, tourists..."
+                className="bg-transparent focus:outline-none w-full text-gray-700"
+              />
+            </div>
+
+            <Link
+              href="/admin/bookings"
+              className="relative p-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+            >
+              <Bell className="w-5 h-5" />
+              {pendingCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping" />
+              )}
+            </Link>
+
+            <Link
+              href="/"
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#18979B] text-white font-bold text-xs shadow hover:bg-[#13797C] transition"
+            >
+              <span>View Live Website</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 p-4 sm:p-8 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

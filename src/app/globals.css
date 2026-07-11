@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #F8FAF9;
+    --foreground: #122826;
+    --primary: #18979B;
+    --primary-dark: #13797C;
+    --primary-light: #E4F5F6;
+    --accent: #D4A017;
+    --accent-light: #FEF9EB;
+    --accent-dark: #A87E0E;
+    --card: #FFFFFF;
+    --card-foreground: #122826;
+    --border: #E2EAEA;
+    --muted: #64748B;
+    --muted-background: #F1F5F4;
+    --success: #10B981;
+    --danger: #EF4444;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #18979B;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #13797C;
+}
+
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(18, 40, 38, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(24, 151, 155, 0.3);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #18979B 0%, #13797C 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(180deg, rgba(18, 40, 38, 0.75) 0%, rgba(18, 40, 38, 0.4) 50%, rgba(248, 250, 249, 1) 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #18979B 0%, #13797C 60%, #D4A017 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F3C644 0%, #D4A017 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animations & transitions */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s infinite ease-in-out;
 }
