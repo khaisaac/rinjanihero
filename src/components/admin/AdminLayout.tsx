@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Compass,
@@ -28,9 +28,50 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { bookings } = useCMSStore();
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [role, setRole] = useState<"Super Admin" | "Basecamp Manager">("Super Admin");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [adminUser, setAdminUser] = useState<{ name: string; email: string; role: string }>({
+    name: "Senaru Director",
+    email: "admin@rinjanihero.com",
+    role: "Super Admin",
+  });
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("admin_token");
+      const hasCookie = document.cookie.includes("admin_token=authenticated");
+
+      if (token === "authenticated" || hasCookie) {
+        setIsAuthenticated(true);
+        const savedUser = localStorage.getItem("admin_user");
+        if (savedUser) {
+          try {
+            setAdminUser(JSON.parse(savedUser));
+          } catch (e) {}
+        }
+      } else {
+        setIsAuthenticated(false);
+        router.replace(`/admin/login?redirect=${encodeURIComponent(pathname)}`);
+      }
+    };
+
+    checkAuth();
+  }, [pathname, router]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (e) {}
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_user");
+    document.cookie = "admin_token=; path=/; max-age=0";
+    setIsAuthenticated(false);
+    router.push("/admin/login");
+  };
 
   const pendingCount = bookings.filter((b) => b.paymentStatus === "Pending").length;
 
@@ -42,6 +83,23 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
     { name: "SEO Blogs & Articles", href: "/admin/blogs", icon: FileText },
     { name: "System Settings", href: "/admin/settings", icon: Settings },
   ];
+
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-[#0F211F] text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3.5 bg-white/[0.04] p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl">
+          <div className="w-9 h-9 border-3 border-[#18979B] border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-bold text-gray-300 tracking-wider uppercase">
+            Verifying Basecamp Authorization...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated === false) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAF9] flex">
@@ -131,21 +189,25 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
           </nav>
         </div>
 
-        {/* Footer User Profile */}
+        {/* Footer User Profile with Logout */}
         <div className="p-6 border-t border-white/10 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-[#D4A017] text-[#122826] flex items-center justify-center font-bold text-sm">
-                SA
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-full bg-[#D4A017] text-[#122826] flex items-center justify-center font-bold text-sm shrink-0">
+                {adminUser.name ? adminUser.name.slice(0, 2).toUpperCase() : "SA"}
               </div>
-              <div>
-                <span className="text-xs font-bold text-white block">Senaru Director</span>
-                <span className="text-[10px] text-gray-400">rinjanihero@gmail.com</span>
+              <div className="min-w-0">
+                <span className="text-xs font-bold text-white truncate block">{adminUser.name}</span>
+                <span className="text-[10px] text-gray-400 truncate block">{adminUser.email}</span>
               </div>
             </div>
-            <Link href="/" target="_blank" className="p-2 text-gray-400 hover:text-white bg-white/5 rounded-xl transition" title="View Live Website">
-              <ExternalLink className="w-4 h-4" />
-            </Link>
+            <button
+              onClick={handleLogout}
+              className="p-2 text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition shrink-0"
+              title="Log Out of Control Panel"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>
@@ -180,6 +242,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
             <Link
               href="/admin/bookings"
               className="relative p-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+              title="Notifications"
             >
               <Bell className="w-5 h-5" />
               {pendingCount > 0 && (
@@ -189,11 +252,21 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
 
             <Link
               href="/"
+              target="_blank"
               className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#18979B] text-white font-bold text-xs shadow hover:bg-[#13797C] transition"
             >
               <span>View Live Website</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition"
+              title="Log Out"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
         </header>
 
