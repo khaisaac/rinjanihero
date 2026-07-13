@@ -1,0 +1,49 @@
+import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
+
+export async function POST(request: Request) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get("file") as File | null;
+
+    if (!file) {
+      return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
+    }
+
+    // Convert file to Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Clean filename and generate unique timestamp prefix
+    const ext = path.extname(file.name) || ".webp";
+    const cleanName = path
+      .basename(file.name, ext)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    const filename = `rh-${Date.now()}-${cleanName.slice(0, 30)}${ext}`;
+
+    // Ensure public/uploads directory exists
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filePath = path.join(uploadDir, filename);
+    fs.writeFileSync(filePath, buffer);
+
+    // Return the relative public URL
+    const publicUrl = `/uploads/${filename}`;
+
+    return NextResponse.json({ success: true, url: publicUrl, filename });
+  } catch (error: any) {
+    console.error("Upload error:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to upload file to server" },
+      { status: 500 }
+    );
+  }
+}

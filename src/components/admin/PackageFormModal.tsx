@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { TrekkingPackage, RouteType, DifficultyLevel } from "@/types/cms";
 import { parseArray } from "@/utils/jsonParser";
+import ImageInputBox from "@/components/admin/ImageInputBox";
+import MultiImageInputBox from "@/components/admin/MultiImageInputBox";
 
 interface PackageFormModalProps {
   isOpen: boolean;
@@ -452,25 +454,12 @@ export default function PackageFormModal({
           {activeTab === "details" && (
             <div className="space-y-5">
               <div>
-                <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-1">
-                  Cover Image URL (Main Card & Hero Background) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="https://images.unsplash.com/..."
+                <ImageInputBox
+                  label="Cover Image URL (Main Card & Hero Background)"
+                  required={true}
                   value={formData.coverImage}
-                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 font-mono text-xs text-gray-700"
+                  onChange={(url) => setFormData({ ...formData, coverImage: url })}
                 />
-                {formData.coverImage && (
-                  <div className="mt-2 h-36 rounded-2xl overflow-hidden border border-gray-200 relative">
-                    <img src={formData.coverImage} alt="Cover Preview" className="w-full h-full object-cover" />
-                    <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded font-bold">
-                      Preview Cover
-                    </span>
-                  </div>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -527,15 +516,13 @@ export default function PackageFormModal({
               </div>
 
               <div>
-                <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-1">
-                  Additional Gallery Images (1 URL per line)
-                </label>
-                <textarea
-                  rows={3}
-                  value={galleryStr}
-                  onChange={(e) => setGalleryStr(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 font-mono text-xs"
-                  placeholder="https://images.unsplash.com/..."
+                <MultiImageInputBox
+                  label="Additional Gallery Images"
+                  images={parseArray(formData.galleryImages)}
+                  onChange={(images) => {
+                    setFormData({ ...formData, galleryImages: images });
+                    setGalleryStr(images.join("\n"));
+                  }}
                 />
               </div>
             </div>
