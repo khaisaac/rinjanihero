@@ -29,7 +29,7 @@ export const initialWebsiteSettings: WebsiteSettings = {
   heroBadgeText: "🏆 #1 Official Rinjani Trekking Specialist • 10+ Years Experience",
   heroHeading: "Explore The Majestic Beauty of Mount Rinjani",
   heroSubheading: "Discover breathtaking summit views, hidden Torean waterfalls, and emerald crater lakes with Lombok's most trusted local guides, certified safety gear, and all-inclusive packages.",
-  heroBackgroundImage: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1920&q=80",
+  heroBackgroundImage: "/hero-rinjani.webp",
 };
 
 export const initialRoutes: RouteInfo[] = [

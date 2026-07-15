@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     siteName: "Rinjani Hero",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
+        url: "/hero-rinjani.webp",
         width: 1200,
         height: 630,
         alt: "Mount Rinjani Summit & Crater Lake Segara Anak",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Rinjani Hero | #1 Mount Rinjani Trekking Specialist",
     description: "Book your unforgettable Mount Rinjani trekking adventure with professional local guides.",
-    images: ["https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80"],
+    images: ["/hero-rinjani.webp"],
   },
   robots: {
     index: true,

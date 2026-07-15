@@ -42,6 +42,10 @@ async function seed() {
       heroHeading: initialWebsiteSettings.heroHeading || "",
       heroSubheading: initialWebsiteSettings.heroSubheading || "",
       heroBackgroundImage: initialWebsiteSettings.heroBackgroundImage || "",
+    }).onDuplicateKeyUpdate({
+      set: {
+        heroBackgroundImage: initialWebsiteSettings.heroBackgroundImage || "",
+      },
     });
 
     // 2. Routes
