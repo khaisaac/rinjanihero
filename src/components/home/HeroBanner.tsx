@@ -24,11 +24,10 @@ export default function HeroBanner() {
           backgroundImage: `url('${settings.heroBackgroundImage}')`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#122826]/90 via-[#122826]/75 to-[#122826]/95 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/40 to-black/85" />
 
-      {/* Decorative Floating Glowing Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#18979B]/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
-      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-[#D4A017]/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      {/* Decorative Floating Golden Orb */}
+      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-[#D4A017]/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
         <div className="space-y-7 max-w-4xl mx-auto">
