@@ -3,7 +3,8 @@ import path from 'path';
 
 const dirsToClean = [
   path.join(process.cwd(), '.next'),
-  path.join(process.cwd(), 'public/_next')
+  path.join(process.cwd(), 'public/_next'),
+  path.join(process.cwd(), '_next')
 ];
 
 try {

@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/:path*",
+        source: "/((?!_next/static|_next/image|favicon.ico).*)",
         headers: [
           {
             key: "Cache-Control",
