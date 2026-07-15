@@ -154,8 +154,8 @@ export default function AboutPreview() {
             <div className="aspect-video bg-black relative flex items-center justify-center">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                title="Mount Rinjani Trekking Video"
+                src="https://www.youtube.com/embed/PgGSvJXICpE?autoplay=1"
+                title="Mount Rinjani Trekking Video - Rinjani Hero"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
