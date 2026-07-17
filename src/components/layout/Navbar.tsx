@@ -46,9 +46,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition duration-300">
-              <Mountain className="w-6 h-6" />
-            </div>
+            <img
+              src="/rinjani.webp"
+              alt="Rinjani Hero Logo"
+              className="w-10 h-10 rounded-xl object-contain shadow-md group-hover:scale-105 transition duration-300 bg-white/10 backdrop-blur-md p-1 border border-white/20"
+            />
             <div>
               <span className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
                 Rinjani <span className="text-gradient-gold">Hero</span>

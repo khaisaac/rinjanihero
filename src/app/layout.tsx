@@ -57,6 +57,11 @@ export const metadata: Metadata = {
     description: "Book your unforgettable Mount Rinjani trekking adventure with professional local guides.",
     images: ["/hero-rinjani.webp"],
   },
+  icons: {
+    icon: "/rinjani.webp",
+    shortcut: "/rinjani.webp",
+    apple: "/rinjani.webp",
+  },
   robots: {
     index: true,
     follow: true,

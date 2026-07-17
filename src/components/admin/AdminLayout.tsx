@@ -121,9 +121,11 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
           {/* Brand Logo */}
           <div className="flex items-center justify-between">
             <Link href="/admin" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#18979B] to-[#D4A017] flex items-center justify-center font-black text-white text-xl shadow">
-                RH
-              </div>
+              <img
+                src="/rinjani.webp"
+                alt="Rinjani Hero Logo"
+                className="w-10 h-10 rounded-xl object-contain shadow bg-white/10 backdrop-blur-md p-1 border border-white/20"
+              />
               <div>
                 <span className="text-base font-extrabold tracking-tight block">RINJANI HERO</span>
                 <span className="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase block">CMS CONTROL PANEL</span>

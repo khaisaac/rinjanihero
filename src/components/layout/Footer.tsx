@@ -31,9 +31,11 @@ export default function Footer() {
           {/* Brand Info (2 cols on lg) */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#18979B] to-[#D4A017] flex items-center justify-center font-black text-white text-xl shadow-lg group-hover:scale-105 transition">
-                RH
-              </div>
+              <img
+                src="/rinjani.webp"
+                alt="Rinjani Hero Logo"
+                className="w-11 h-11 rounded-xl object-contain shadow-lg group-hover:scale-105 transition bg-white/10 backdrop-blur-md p-1 border border-white/20"
+              />
               <div>
                 <span className="text-xl font-extrabold tracking-tight text-white block">
                   RINJANI HERO
