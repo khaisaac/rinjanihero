@@ -20,7 +20,7 @@ export default function ToreanRouteSection() {
           <div className="lg:col-span-6 order-2 lg:order-1 relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
               <img
-                src={toreanRoute.coverImage}
+                src={toreanRoute.coverImage && !toreanRoute.coverImage.includes("unsplash.com") ? toreanRoute.coverImage : "/torean.webp"}
                 alt="Torean Jurassic Park River Valley & Waterfall"
                 className="w-full h-[440px] object-cover"
               />

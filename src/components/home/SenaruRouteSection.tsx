@@ -74,7 +74,7 @@ export default function SenaruRouteSection() {
           <div className="lg:col-span-6 relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
               <img
-                src={senaruRoute.coverImage}
+                src={senaruRoute.coverImage && !senaruRoute.coverImage.includes("unsplash.com") ? senaruRoute.coverImage : "/senaru.webp"}
                 alt="Senaru Rainforest and Crater Rim Sunset"
                 className="w-full h-[440px] object-cover"
               />

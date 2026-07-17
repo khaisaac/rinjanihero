@@ -20,7 +20,7 @@ export default function SembalunRouteSection() {
           <div className="lg:col-span-6 order-2 lg:order-1 relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
               <img
-                src={sembalunRoute.coverImage}
+                src={sembalunRoute.coverImage && !sembalunRoute.coverImage.includes("unsplash.com") ? sembalunRoute.coverImage : "/sembalun.webp"}
                 alt="Sembalun Route Savannah & Summit Ridge"
                 className="w-full h-[440px] object-cover"
               />
