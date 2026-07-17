@@ -30,20 +30,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-white/10">
           {/* Brand Info (2 cols on lg) */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="inline-block group py-1">
               <img
                 src="/rinjani.webp"
                 alt="Rinjani Hero Logo"
-                className="w-11 h-11 rounded-xl object-contain shadow-lg group-hover:scale-105 transition bg-white/10 backdrop-blur-md p-1 border border-white/20"
+                className="h-12 sm:h-14 w-auto object-contain group-hover:scale-105 transition drop-shadow-lg"
               />
-              <div>
-                <span className="text-xl font-extrabold tracking-tight text-white block">
-                  RINJANI HERO
-                </span>
-                <span className="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase block">
-                  Lombok Expedition Guides
-                </span>
-              </div>
             </Link>
 
             <p className="text-sm text-gray-300 leading-relaxed max-w-sm">

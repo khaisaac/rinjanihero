@@ -209,20 +209,12 @@ export default function AdminLoginPage() {
 
       {/* Top Header Bar */}
       <header className="relative z-10 px-6 py-6 sm:px-12 flex items-center justify-between border-b border-white/5">
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="inline-block group py-1">
           <img
             src="/rinjani.webp"
             alt="Rinjani Hero Logo"
-            className="w-10 h-10 rounded-xl object-contain shadow-lg group-hover:scale-105 transition bg-white/10 backdrop-blur-md p-1 border border-white/20"
+            className="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition drop-shadow-lg"
           />
-          <div>
-            <span className="text-base font-black tracking-tight block text-white group-hover:text-[#18979B] transition">
-              RINJANI HERO
-            </span>
-            <span className="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase block">
-              TREKKING & EXPEDITIONS
-            </span>
-          </div>
         </Link>
 
         <Link

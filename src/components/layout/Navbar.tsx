@@ -45,20 +45,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center group py-1">
             <img
               src="/rinjani.webp"
               alt="Rinjani Hero Logo"
-              className="w-10 h-10 rounded-xl object-contain shadow-md group-hover:scale-105 transition duration-300 bg-white/10 backdrop-blur-md p-1 border border-white/20"
+              className="h-11 sm:h-13 w-auto object-contain group-hover:scale-105 transition duration-300 drop-shadow-md"
             />
-            <div>
-              <span className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
-                Rinjani <span className="text-gradient-gold">Hero</span>
-              </span>
-              <span className="block text-[10px] text-[#FEF9EB] font-semibold tracking-wider uppercase opacity-90">
-                Official Trekking Specialist
-              </span>
-            </div>
           </Link>
 
           {/* Desktop Navigation Links */}

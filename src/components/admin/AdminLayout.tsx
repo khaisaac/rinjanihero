@@ -120,16 +120,12 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         <div className="p-6 space-y-8">
           {/* Brand Logo */}
           <div className="flex items-center justify-between">
-            <Link href="/admin" className="flex items-center gap-3">
+            <Link href="/admin" className="inline-block py-1">
               <img
                 src="/rinjani.webp"
                 alt="Rinjani Hero Logo"
-                className="w-10 h-10 rounded-xl object-contain shadow bg-white/10 backdrop-blur-md p-1 border border-white/20"
+                className="h-10 sm:h-11 w-auto object-contain drop-shadow"
               />
-              <div>
-                <span className="text-base font-extrabold tracking-tight block">RINJANI HERO</span>
-                <span className="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase block">CMS CONTROL PANEL</span>
-              </div>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
