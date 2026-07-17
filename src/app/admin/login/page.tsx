@@ -149,8 +149,8 @@ function AdminLoginForm() {
           <div className="bg-[#18979B]/15 border border-[#18979B]/30 rounded-2xl p-3.5 text-xs text-[#18979B] flex items-start gap-2.5">
             <Key className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold block text-white">Basecamp Admin Key:</span>
-              <span>Username: <strong className="text-white">admin</strong> | Password: <strong className="text-white">sTEREO123.</strong></span>
+              <span className="font-bold block text-white">Basecamp Access Recovery:</span>
+              <span>Please contact the <strong className="text-white">Senaru Basecamp Director</strong> or IT administrator to request authorized access or password resets.</span>
             </div>
           </div>
         )}

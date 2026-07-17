@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid access key or username. Default: admin / sTEREO123.",
+          error: "Invalid username or access key. Please check your credentials.",
         },
         { status: 401 }
       );
