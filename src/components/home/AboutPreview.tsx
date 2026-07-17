@@ -15,7 +15,7 @@ export default function AboutPreview() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Text Bio (6 spans) */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-6 space-y-6 lg:space-y-7">
             <div className="inline-flex items-center gap-2 bg-[#18979B]/10 text-[#18979B] px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
               <Shield className="w-4 h-4" />
               <span>Official Local Operator Since 2013</span>
@@ -29,49 +29,49 @@ export default function AboutPreview() {
               Founded and operated by native mountain guides from Senaru Village right at the base of Mount Rinjani, <strong className="text-[#18979B] font-bold">Rinjani Hero</strong> has been guiding adventurers from over 60 countries across Lombok&apos;s volcanic trails since 2013.
             </p>
 
-            <p className="text-gray-600 text-base leading-relaxed">
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
               We believe that a truly unforgettable expedition starts with absolute safety, respect for nature, and taking genuine care of our local porter community. That is why every single trek we lead is equipped with storm-rated tents, thick sleeping mattresses, emergency oxygen, and three-course hot meals cooked fresh on the mountain.
             </p>
 
             {/* Core Values Bullet List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15">
+              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15 hover:border-[#18979B]/30 transition">
                 <div className="w-9 h-9 rounded-xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-[#122826]">Certified Wilderness Guides</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Licensed under Rinjani National Park with first aid medical training.</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-normal">Licensed under Rinjani National Park with first aid medical training.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15">
+              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15 hover:border-[#18979B]/30 transition">
                 <div className="w-9 h-9 rounded-xl bg-[#D4A017]/10 text-[#D4A017] flex items-center justify-center shrink-0 mt-0.5">
                   <Users className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-[#122826]">Fair Porter Welfare</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">We pay above standard wages and limit carrying loads to protect our team.</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-normal">We pay above standard wages and limit carrying loads to protect our team.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15">
+              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15 hover:border-[#18979B]/30 transition">
                 <div className="w-9 h-9 rounded-xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center shrink-0 mt-0.5">
                   <Heart className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-[#122826]">Leave No Trace Eco-Treks</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Our porters carry out 100% of our camping waste plus extra trail cleanup.</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-normal">Our porters carry out 100% of our camping waste plus extra trail cleanup.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15">
+              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#F8FAF9] border border-[#18979B]/15 hover:border-[#18979B]/30 transition">
                 <div className="w-9 h-9 rounded-xl bg-[#D4A017]/10 text-[#D4A017] flex items-center justify-center shrink-0 mt-0.5">
                   <Award className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-[#122826]">Best Price Guarantee</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Direct local pricing with zero hidden agency markup fees.</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-normal">Direct local pricing with zero hidden agency markup fees.</p>
                 </div>
               </div>
             </div>
@@ -90,46 +90,54 @@ export default function AboutPreview() {
 
           {/* Right Image / Video Preview (6 spans) */}
           <div className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white group">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white group bg-[#122826]">
+              {/* NOTE: Untuk mengganti gambar cover ini, ubah URL pada atribut src di bawah ini */}
               <img
-                src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
-                alt="Rinjani Hero Guides and Trekkers on Plawangan Sembalun Crater Rim"
-                className="w-full h-[460px] object-cover group-hover:scale-105 transition duration-700"
+                src="https://images.unsplash.com/photo-1620737785233-6a848369d002?auto=format&fit=crop&w=1200&q=80"
+                alt="Silhouette of people on Mount Rinjani during sunset - Rinjani Hero"
+                className="w-full h-[480px] lg:h-[540px] object-cover group-hover:scale-105 transition duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#122826]/90 via-[#122826]/30 to-transparent flex flex-col justify-end p-8 text-white">
-                <button
-                  onClick={() => setVideoModalOpen(true)}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-[#D4A017] text-[#122826] flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-[#F3C644] transition duration-300"
-                  aria-label="Play Expedition Video"
-                >
-                  <Play className="w-8 h-8 fill-[#122826] ml-1" />
-                </button>
 
-                <div className="relative z-10">
+              {/* Top-Left Experience Badge - Precision Aligned Inside Container */}
+              <div className="absolute top-6 left-6 z-20 bg-[#122826]/85 backdrop-blur-md text-white p-3.5 sm:p-4 rounded-2xl shadow-xl border border-white/20 max-w-[270px] sm:max-w-[300px] transition group-hover:bg-[#122826]/95">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#18979B] to-[#13797C] flex items-center justify-center text-lg font-black text-white shrink-0 shadow-md border border-white/10">
+                    10+
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#D4A017]">
+                      Years Excellence
+                    </h4>
+                    <p className="text-[11px] text-gray-200 leading-snug mt-0.5 font-medium">
+                      Proudly serving 1,000+ international climbers annually since 2013.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Overlay Info */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#122826]/95 via-[#122826]/40 to-transparent flex flex-col justify-end p-6 sm:p-8 text-white pointer-events-none">
+                <div className="relative z-10 sm:max-w-lg pointer-events-auto">
                   <span className="text-xs text-[#D4A017] font-bold uppercase tracking-wider block mb-1">
                     🎥 Watch Our Story
                   </span>
-                  <h3 className="text-xl font-extrabold text-white">
-                    Exploring Plawangan Sembalun & Segara Anak Lake
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug">
+                    Exploring Start From Sembalun & End At Torean
                   </h3>
-                  <p className="text-xs text-gray-300 mt-1">
-                    Join our local Senaru team on an immersive 3-minute journey up the volcano.
+                  <p className="text-xs sm:text-sm text-gray-300 mt-1.5 leading-relaxed">
+                    Join our local Sembalun team on an immersive 3-minute journey up the volcano.
                   </p>
                 </div>
               </div>
-            </div>
 
-            {/* Floating Experience Badge */}
-            <div className="absolute -bottom-6 -left-6 bg-[#122826] text-white p-5 rounded-2xl shadow-xl border border-[#18979B]/40 max-w-xs hidden sm:block">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#18979B] flex items-center justify-center text-xl font-black text-white shrink-0">
-                  10+
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold uppercase text-[#D4A017]">Years Excellence</h4>
-                  <p className="text-[11px] text-gray-300">Proudly serving over 1,000+ international climbers annually since 2013.</p>
-                </div>
-              </div>
+              {/* Center Play Button */}
+              <button
+                onClick={() => setVideoModalOpen(true)}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-[#D4A017] text-[#122826] flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-[#F3C644] transition duration-300 z-30 border-2 border-white/20"
+                aria-label="Play Expedition Video"
+              >
+                <Play className="w-8 h-8 fill-[#122826] ml-1" />
+              </button>
             </div>
           </div>
         </div>

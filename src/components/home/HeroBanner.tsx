@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ShieldCheck,
@@ -14,6 +15,24 @@ import { useCMSStore } from "@/store/cmsStore";
 export default function HeroBanner() {
   const router = useRouter();
   const { settings } = useCMSStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const bgImage = mounted ? settings.heroBackgroundImage : "/hero-rinjani.webp";
+  const badgeText = mounted
+    ? settings.heroBadgeText
+    : "🏆 #1 Official Rinjani Trekking Specialist • 10+ Years Experience";
+  const heading = mounted
+    ? settings.heroHeading
+    : "Explore The Majestic Beauty of Mount Rinjani";
+  const subheading = mounted
+    ? settings.heroSubheading
+    : "Discover breathtaking summit views, hidden Torean waterfalls, and emerald crater lakes with Lombok's most trusted local guides, certified safety gear, and all-inclusive packages.";
+
+  const headingParts = heading.split("Mount Rinjani");
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center text-white overflow-hidden py-20 lg:py-28">
@@ -21,10 +40,10 @@ export default function HeroBanner() {
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105"
         style={{
-          backgroundImage: `url('${settings.heroBackgroundImage}')`,
+          backgroundImage: `url('${bgImage}')`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/40 to-black/85" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-[#122826]/95" />
 
       {/* Decorative Floating Golden Orb */}
       <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-[#D4A017]/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
@@ -34,19 +53,19 @@ export default function HeroBanner() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-[#18979B]/30 border border-[#18979B]/50 px-5 py-2 rounded-full text-xs sm:text-sm font-semibold text-[#D4A017] backdrop-blur-md shadow-sm animate-fade-in mx-auto">
             <Sparkles className="w-4 h-4 text-[#D4A017]" />
-            <span>{settings.heroBadgeText}</span>
+            <span>{badgeText}</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight text-white drop-shadow-md">
-            {settings.heroHeading.split("Mount Rinjani")[0]}
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.75)]">
+            {headingParts[0]}
             <span className="text-gradient-gold block sm:inline">Mount Rinjani</span>
-            {settings.heroHeading.split("Mount Rinjani")[1]}
+            {headingParts[1]}
           </h1>
 
           {/* Subheading */}
           <p className="text-gray-200 text-base sm:text-xl leading-relaxed max-w-2xl mx-auto drop-shadow">
-            {settings.heroSubheading}
+            {subheading}
           </p>
 
           {/* Quick Feature Highlights */}
