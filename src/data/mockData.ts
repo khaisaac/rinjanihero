@@ -117,7 +117,7 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
     isFeatured: true,
     shortDescription: "The ultimate fast-track adventure to conquer Mount Rinjani's 3,726m summit in just 2 days. Perfect for fit travelers and weekend warriors.",
     overview: "This 2 Days 1 Night Sembalun Summit program is tailored for trekkers who want to reach the highest peak of Mount Rinjani (3,726m) without spending extra nights at the lake. Starting from the savannah grasslands of Sembalun, you will ascend to Plawangan Sembalun Crater Rim (2,639m) to camp under a canopy of stars. At 2:00 AM, begin the thrilling climb up the volcanic ridge to witness one of Southeast Asia's most spectacular sunrises from the summit.",
-    coverImage: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/sembalun.webp",
     galleryImages: [
       "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
@@ -211,7 +211,7 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
     isFeatured: true,
     shortDescription: "Our most sought-after signature itinerary! Combine the Sembalun Summit climb with the turquoise Segara Anak Lake, hot springs, and scenic Torean waterfall valley.",
     overview: "Experience everything Mount Rinjani has to offer in one incredible loop! This 3 Days 2 Nights masterpiece begins via the Sembalun savannah up to the crater rim, pushes to the 3,726m summit at dawn, then descends into the ancient volcanic caldera to camp beside the sacred turquoise waters of Segara Anak Lake (2,000m). Relax in natural thermal sulfur hot springs before exiting via the jaw-dropping Torean valley, passing towering cliffs and the majestic Penimbungan Waterfall.",
-    coverImage: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/torean.webp",
     galleryImages: [
       "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
@@ -297,7 +297,7 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
     isFeatured: true,
     shortDescription: "Ideal for beginners, families, and nature lovers who want to experience breathtaking views of the turquoise lake and sunset without climbing the steep summit.",
     overview: "This gentle yet rewarding 2 Days 1 Night trek ascends via the Senaru route through rich tropical rainforests teeming with wildlife, including rare black ebony leaf monkeys. You will camp at Senaru Crater Rim (2,641m), which offers what many consider the single most beautiful view on Mount Rinjani: looking directly down over the turquoise Segara Anak Lake and the smoking cone of Gunung Baru Jari during golden hour.",
-    coverImage: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/senaru.webp",
     galleryImages: [
       "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
@@ -365,7 +365,7 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
     isFeatured: false,
     shortDescription: "The complete grand traverse: Summit 3,726m, 2 crater rims (Sembalun & Senaru), Segara Anak Lake camping, hot springs, and ancient rainforests.",
     overview: "For those who want to experience every single ecosystem and viewpoint of Mount Rinjani at a comfortable, immersive pace. Spend 4 days traversing from East to West across the national park, camping at both crater rims, soaking in hot springs, and descending through pristine rainforests.",
-    coverImage: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/hero-rinjani.webp",
     galleryImages: [
       "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",

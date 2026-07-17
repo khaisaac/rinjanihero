@@ -30,31 +30,45 @@ import {
   initialBookings,
 } from "@/data/mockData";
 
+const resolveMediaUrl = (url?: string, routeOrSlug?: string): string => {
+  if (!url || typeof url !== "string" || url.includes("unsplash.com") || url.includes("placeholder")) {
+    const key = (routeOrSlug || url || "").toLowerCase();
+    if (key.includes("sembalun") || key.includes("2d1n-sembalun")) return "/sembalun.webp";
+    if (key.includes("senaru") || key.includes("sunset") || key.includes("crater")) return "/senaru.webp";
+    if (key.includes("torean") || key.includes("lake") || key.includes("3d2n")) return "/torean.webp";
+    return "/hero-rinjani.webp";
+  }
+  return url;
+};
+
 const normalizePackage = (pkg: any): TrekkingPackage => ({
   ...pkg,
-  galleryImages: parseArray(pkg.galleryImages),
-  includes: parseArray(pkg.includes),
-  excludes: parseArray(pkg.excludes),
-  thingsToBring: parseArray(pkg.thingsToBring),
-  itinerary: parseArray(pkg.itinerary),
-  faq: parseArray(pkg.faq),
-  relatedPackageIds: parseArray(pkg.relatedPackageIds),
+  coverImage: resolveMediaUrl(pkg?.coverImage, pkg?.route || pkg?.slug || pkg?.title),
+  galleryImages: parseArray(pkg?.galleryImages).map((img: string) => resolveMediaUrl(img, pkg?.route || pkg?.slug)),
+  includes: parseArray(pkg?.includes),
+  excludes: parseArray(pkg?.excludes),
+  thingsToBring: parseArray(pkg?.thingsToBring),
+  itinerary: parseArray(pkg?.itinerary),
+  faq: parseArray(pkg?.faq),
+  relatedPackageIds: parseArray(pkg?.relatedPackageIds),
 });
 
 const normalizeRoute = (route: any): RouteInfo => ({
   ...route,
-  highlights: parseArray(route.highlights),
+  coverImage: resolveMediaUrl(route?.coverImage, route?.id || route?.title),
+  highlights: parseArray(route?.highlights),
 });
 
 const normalizeBlog = (blog: any): BlogPost => ({
   ...blog,
-  tags: parseArray(blog.tags),
+  coverImage: resolveMediaUrl(blog?.coverImage, blog?.slug || blog?.title),
+  tags: parseArray(blog?.tags),
 });
 
 const normalizeETicket = (ticket: any): ETicketOption => ({
   ...ticket,
-  features: parseArray(ticket.features),
-  requirements: parseArray(ticket.requirements),
+  features: parseArray(ticket?.features),
+  requirements: parseArray(ticket?.requirements),
 });
 
 export interface BookingPrefill {
@@ -550,12 +564,19 @@ export const useCMSStore = create<CMSStoreState>()(
           faqs: initialFAQs,
           blogPosts: initialBlogPosts,
           vouchers: initialVouchers,
-          bookings: initialBookings,
           bookingPrefill: null,
         }),
     }),
     {
-      name: "rinjani-hero-cms-v1",
+      name: "rinjani-hero-cms-v2",
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.packages = (state.packages || []).map(normalizePackage);
+          state.routes = (state.routes || []).map(normalizeRoute);
+          state.blogPosts = (state.blogPosts || []).map(normalizeBlog);
+          state.blogs = (state.blogs || state.blogPosts || []).map(normalizeBlog);
+        }
+      },
       partialize: (state) => ({
         settings: state.settings,
         routes: state.routes,

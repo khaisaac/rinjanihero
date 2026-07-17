@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 export async function POST(request: Request) {
   try {
@@ -26,14 +27,26 @@ export async function POST(request: Request) {
 
     const filename = `rh-${Date.now()}-${cleanName.slice(0, 30)}${ext}`;
 
-    // Ensure public/uploads directory exists
+    // 1. Save to primary public/uploads directory (for local static serving when available)
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
-
     const filePath = path.join(uploadDir, filename);
     fs.writeFileSync(filePath, buffer);
+
+    // 2. Save to persistent storage outside workspace (survives git push / deployment / build resets on Hostinger & VPS)
+    try {
+      const persistentDir = path.join(os.homedir(), ".rinjani_persistent_storage", "uploads");
+      if (!fs.existsSync(persistentDir)) {
+        fs.mkdirSync(persistentDir, { recursive: true });
+      }
+      const persistentFilePath = path.join(persistentDir, filename);
+      fs.writeFileSync(persistentFilePath, buffer);
+      console.log(`[Upload Service] File backed up to persistent storage: ${persistentFilePath}`);
+    } catch (backupErr) {
+      console.warn("[Upload Service Warning] Could not write to persistent backup dir:", backupErr);
+    }
 
     // Return the relative public URL
     const publicUrl = `/uploads/${filename}`;

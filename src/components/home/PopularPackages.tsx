@@ -87,8 +87,29 @@ export default function PopularPackages() {
               {/* Image Header */}
               <div className="relative h-60 overflow-hidden">
                 <img
-                  src={pkg.coverImage}
+                  src={
+                    pkg.coverImage && !pkg.coverImage.includes("unsplash.com")
+                      ? pkg.coverImage
+                      : pkg.route === "sembalun"
+                      ? "/sembalun.webp"
+                      : pkg.route === "senaru"
+                      ? "/senaru.webp"
+                      : pkg.route === "torean"
+                      ? "/torean.webp"
+                      : "/hero-rinjani.webp"
+                  }
                   alt={pkg.title}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.src =
+                      pkg.route === "sembalun"
+                        ? "/sembalun.webp"
+                        : pkg.route === "senaru"
+                        ? "/senaru.webp"
+                        : pkg.route === "torean"
+                        ? "/torean.webp"
+                        : "/hero-rinjani.webp";
+                  }}
                   className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

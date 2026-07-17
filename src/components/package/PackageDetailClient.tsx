@@ -124,8 +124,29 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
             className="lg:col-span-8 h-[380px] sm:h-[460px] rounded-3xl overflow-hidden relative cursor-pointer group shadow-lg"
           >
             <img
-              src={pkg.coverImage}
+              src={
+                pkg.coverImage && !pkg.coverImage.includes("unsplash.com")
+                  ? pkg.coverImage
+                  : pkg.route === "sembalun"
+                  ? "/sembalun.webp"
+                  : pkg.route === "senaru"
+                  ? "/senaru.webp"
+                  : pkg.route === "torean"
+                  ? "/torean.webp"
+                  : "/hero-rinjani.webp"
+              }
               alt={pkg.title}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.src =
+                  pkg.route === "sembalun"
+                    ? "/sembalun.webp"
+                    : pkg.route === "senaru"
+                    ? "/senaru.webp"
+                    : pkg.route === "torean"
+                    ? "/torean.webp"
+                    : "/hero-rinjani.webp";
+              }}
               className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-6 text-white">
@@ -380,7 +401,32 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                       className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 flex flex-col justify-between group"
                     >
                       <div className="h-44 relative overflow-hidden">
-                        <img src={rel.coverImage} alt={rel.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                        <img
+                          src={
+                            rel.coverImage && !rel.coverImage.includes("unsplash.com")
+                              ? rel.coverImage
+                              : rel.route === "sembalun"
+                              ? "/sembalun.webp"
+                              : rel.route === "senaru"
+                              ? "/senaru.webp"
+                              : rel.route === "torean"
+                              ? "/torean.webp"
+                              : "/hero-rinjani.webp"
+                          }
+                          alt={rel.title}
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.src =
+                              rel.route === "sembalun"
+                                ? "/sembalun.webp"
+                                : rel.route === "senaru"
+                                ? "/senaru.webp"
+                                : rel.route === "torean"
+                                ? "/torean.webp"
+                                : "/hero-rinjani.webp";
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        />
                         <span className="absolute top-3 left-3 bg-[#122826]/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
                           {rel.route} Route
                         </span>
