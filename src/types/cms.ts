@@ -35,8 +35,23 @@ export interface TrekkingPackage {
   overview: string;
   coverImage: string;
   galleryImages: string[];
-  includes: string[];
-  excludes: string[];
+  packageTypes: {
+    standard: {
+      description: string;
+      includes: string[];
+      excludes: string[];
+    };
+    private: {
+      description: string;
+      includes: string[];
+      excludes: string[];
+    };
+    meetingPoint: {
+      description: string;
+      includes: string[];
+      excludes: string[];
+    };
+  };
   thingsToBring: string[];
   itinerary: {
     day: number;

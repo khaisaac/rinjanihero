@@ -127,8 +127,11 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
     ],
-    includes: [
-      "Official E-Rinjani National Park entrance tickets & insurance",
+    packageTypes: {
+      standard: {
+        description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+        includes: [
+          "Official E-Rinjani National Park entrance tickets & insurance",
       "Licensed English-speaking mountain guide & experienced local porters",
       "Complimentary 1-night hotel stay in Senaru before trekking",
       "Free transport pickup & drop-off (Airport, Bangsal, Senggigi, Mataram, Kuta)",
@@ -137,13 +140,58 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "Camping equipment (Spacious dome tent, warm sleeping bag, thick sponge mattress, camping chair & table)",
       "First aid medical kit including emergency oxygen cylinder",
       "Certificate of achievement upon completing the trek",
-    ],
-    excludes: [
-      "International / domestic flight tickets",
+        ],
+        excludes: [
+          "International / domestic flight tickets",
       "Personal trekking gear (jacket, shoes, headlamp)",
       "Tip for guide and porters (customary & appreciated)",
       "Travel insurance covering high altitude sports",
-    ],
+        ],
+      },
+      private: {
+        description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+        includes: [
+          "Official E-Rinjani National Park entrance tickets & insurance",
+      "Licensed English-speaking mountain guide & experienced local porters",
+      "Complimentary 1-night hotel stay in Senaru before trekking",
+      "Free transport pickup & drop-off (Airport, Bangsal, Senggigi, Mataram, Kuta)",
+      "All meals during the trek (3x per day + fresh tropical fruit & afternoon snacks)",
+      "Unlimited clean drinking water, hot tea, and Lombok coffee",
+      "Camping equipment (Spacious dome tent, warm sleeping bag, thick sponge mattress, camping chair & table)",
+      "First aid medical kit including emergency oxygen cylinder",
+      "Certificate of achievement upon completing the trek",
+          "Private Guide",
+          "Extra Porters"
+        ],
+        excludes: [
+          "International / domestic flight tickets",
+      "Personal trekking gear (jacket, shoes, headlamp)",
+      "Tip for guide and porters (customary & appreciated)",
+      "Travel insurance covering high altitude sports",
+        ],
+      },
+      meetingPoint: {
+        description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+        includes: [
+          "Official E-Rinjani National Park entrance tickets & insurance",
+      "Licensed English-speaking mountain guide & experienced local porters",
+      "Complimentary 1-night hotel stay in Senaru before trekking",
+      "Free transport pickup & drop-off (Airport, Bangsal, Senggigi, Mataram, Kuta)",
+      "All meals during the trek (3x per day + fresh tropical fruit & afternoon snacks)",
+      "Unlimited clean drinking water, hot tea, and Lombok coffee",
+      "Camping equipment (Spacious dome tent, warm sleeping bag, thick sponge mattress, camping chair & table)",
+      "First aid medical kit including emergency oxygen cylinder",
+      "Certificate of achievement upon completing the trek",
+        ],
+        excludes: [
+          "International / domestic flight tickets",
+      "Personal trekking gear (jacket, shoes, headlamp)",
+      "Tip for guide and porters (customary & appreciated)",
+      "Travel insurance covering high altitude sports",
+          "Transport to/from Senaru"
+        ],
+      },
+    },
     thingsToBring: [
       "Sturdy hiking boots with good grip",
       "Warm windproof/waterproof jacket (-5°C rating recommended for summit)",
@@ -221,8 +269,11 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     ],
-    includes: [
-      "Official E-Rinjani entrance tickets + 3 days national park insurance",
+    packageTypes: {
+      standard: {
+        description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+        includes: [
+          "Official E-Rinjani entrance tickets + 3 days national park insurance",
       "Certified local English-speaking lead guide + support team porters",
       "1 night pre-trek hotel room with breakfast in Senaru",
       "Private air-conditioned car pickup and drop-off (All Lombok areas)",
@@ -230,12 +281,53 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "Premium camping tents (2-person dome), thick sleeping mattress & pillow",
       "First aid kit and emergency oxygen supply",
       "Hot spring visit and Segara Anak lakeside camping experience",
-    ],
-    excludes: [
-      "International/domestic flights",
+        ],
+        excludes: [
+          "International/domestic flights",
       "Personal daypack & trekking shoes/clothing",
       "Tipping for guide and porter team",
-    ],
+        ],
+      },
+      private: {
+        description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+        includes: [
+          "Official E-Rinjani entrance tickets + 3 days national park insurance",
+      "Certified local English-speaking lead guide + support team porters",
+      "1 night pre-trek hotel room with breakfast in Senaru",
+      "Private air-conditioned car pickup and drop-off (All Lombok areas)",
+      "Gourmet mountain meals (Breakfast, Lunch, Dinner + fresh fruits/drinks)",
+      "Premium camping tents (2-person dome), thick sleeping mattress & pillow",
+      "First aid kit and emergency oxygen supply",
+      "Hot spring visit and Segara Anak lakeside camping experience",
+          "Private Guide",
+          "Extra Porters"
+        ],
+        excludes: [
+          "International/domestic flights",
+      "Personal daypack & trekking shoes/clothing",
+      "Tipping for guide and porter team",
+        ],
+      },
+      meetingPoint: {
+        description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+        includes: [
+          "Official E-Rinjani entrance tickets + 3 days national park insurance",
+      "Certified local English-speaking lead guide + support team porters",
+      "1 night pre-trek hotel room with breakfast in Senaru",
+      "Private air-conditioned car pickup and drop-off (All Lombok areas)",
+      "Gourmet mountain meals (Breakfast, Lunch, Dinner + fresh fruits/drinks)",
+      "Premium camping tents (2-person dome), thick sleeping mattress & pillow",
+      "First aid kit and emergency oxygen supply",
+      "Hot spring visit and Segara Anak lakeside camping experience",
+        ],
+        excludes: [
+          "International/domestic flights",
+      "Personal daypack & trekking shoes/clothing",
+      "Tipping for guide and porter team",
+          "Transport to/from Senaru"
+        ],
+      },
+    },
     thingsToBring: [
       "Hiking shoes with rugged tread",
       "Warm jacket and waterproof rain shell",
@@ -305,19 +397,59 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     ],
-    includes: [
-      "Official E-Rinjani National Park entry tickets",
+    packageTypes: {
+      standard: {
+        description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+        includes: [
+          "Official E-Rinjani National Park entry tickets",
       "Professional local guide & experienced porters",
       "1-night pre-trek hotel accommodation in Senaru",
       "All private transport across Lombok",
       "3 daily meals, snacks, and unlimited drinking water",
       "Full camping gear (tent, mattress, sleeping bag, chairs)",
       "First aid emergency supplies",
-    ],
-    excludes: [
-      "Flights and personal travel gear",
+        ],
+        excludes: [
+          "Flights and personal travel gear",
       "Tips for guide and porters",
-    ],
+        ],
+      },
+      private: {
+        description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+        includes: [
+          "Official E-Rinjani National Park entry tickets",
+      "Professional local guide & experienced porters",
+      "1-night pre-trek hotel accommodation in Senaru",
+      "All private transport across Lombok",
+      "3 daily meals, snacks, and unlimited drinking water",
+      "Full camping gear (tent, mattress, sleeping bag, chairs)",
+      "First aid emergency supplies",
+          "Private Guide",
+          "Extra Porters"
+        ],
+        excludes: [
+          "Flights and personal travel gear",
+      "Tips for guide and porters",
+        ],
+      },
+      meetingPoint: {
+        description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+        includes: [
+          "Official E-Rinjani National Park entry tickets",
+      "Professional local guide & experienced porters",
+      "1-night pre-trek hotel accommodation in Senaru",
+      "All private transport across Lombok",
+      "3 daily meals, snacks, and unlimited drinking water",
+      "Full camping gear (tent, mattress, sleeping bag, chairs)",
+      "First aid emergency supplies",
+        ],
+        excludes: [
+          "Flights and personal travel gear",
+      "Tips for guide and porters",
+          "Transport to/from Senaru"
+        ],
+      },
+    },
     thingsToBring: [
       "Comfortable hiking shoes",
       "Warm evening jacket",
@@ -374,17 +506,53 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1200&q=80",
     ],
-    includes: [
-      "4 Days official E-Rinjani ticket & insurance",
+    packageTypes: {
+      standard: {
+        description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+        includes: [
+          "4 Days official E-Rinjani ticket & insurance",
       "Expert guide & dedicated porter team",
       "Pre-trek hotel stay in Senaru + free transfers",
       "Full 4-day gourmet meals & camping equipment",
       "Hot springs visit and all national park taxes",
-    ],
-    excludes: [
-      "Flights and personal gear",
+        ],
+        excludes: [
+          "Flights and personal gear",
       "Tips for team",
-    ],
+        ],
+      },
+      private: {
+        description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+        includes: [
+          "4 Days official E-Rinjani ticket & insurance",
+      "Expert guide & dedicated porter team",
+      "Pre-trek hotel stay in Senaru + free transfers",
+      "Full 4-day gourmet meals & camping equipment",
+      "Hot springs visit and all national park taxes",
+          "Private Guide",
+          "Extra Porters"
+        ],
+        excludes: [
+          "Flights and personal gear",
+      "Tips for team",
+        ],
+      },
+      meetingPoint: {
+        description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+        includes: [
+          "4 Days official E-Rinjani ticket & insurance",
+      "Expert guide & dedicated porter team",
+      "Pre-trek hotel stay in Senaru + free transfers",
+      "Full 4-day gourmet meals & camping equipment",
+      "Hot springs visit and all national park taxes",
+        ],
+        excludes: [
+          "Flights and personal gear",
+      "Tips for team",
+          "Transport to/from Senaru"
+        ],
+      },
+    },
     thingsToBring: [
       "Full hiking gear, sturdy boots, warm layers, swimwear",
     ],
@@ -453,13 +621,47 @@ export const initialTrekkingPackages: TrekkingPackage[] = [
       "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1200&q=80",
     ],
-    includes: [
-      "Official tickets & insurance",
+    packageTypes: {
+      standard: {
+        description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+        includes: [
+          "Official tickets & insurance",
       "Lead guide & porter crew",
       "Pre-trek hotel stay + transfers",
       "Gourmet camping meals & equipment",
-    ],
-    excludes: ["Personal gear and tips"],
+        ],
+        excludes: [
+          "Personal gear and tips"
+        ],
+      },
+      private: {
+        description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+        includes: [
+          "Official tickets & insurance",
+      "Lead guide & porter crew",
+      "Pre-trek hotel stay + transfers",
+      "Gourmet camping meals & equipment",
+          "Private Guide",
+          "Extra Porters"
+        ],
+        excludes: [
+          "Personal gear and tips"
+        ],
+      },
+      meetingPoint: {
+        description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+        includes: [
+          "Official tickets & insurance",
+      "Lead guide & porter crew",
+      "Pre-trek hotel stay + transfers",
+      "Gourmet camping meals & equipment",
+        ],
+        excludes: [
+          "Personal gear and tips",
+          "Transport to/from Senaru"
+        ],
+      },
+    },
     thingsToBring: ["Sturdy hiking shoes, swimwear, rain jacket"],
     itinerary: [
       {

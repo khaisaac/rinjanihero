@@ -158,7 +158,7 @@ export default function PopularPackages() {
 
                   {/* Highlights pills */}
                   <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-                    {parseArray(pkg.includes).slice(0, 3).map((inc: string, i: number) => (
+                    {(pkg.packageTypes?.standard?.includes || []).slice(0, 3).map((inc: string, i: number) => (
                       <div key={i} className="flex items-start gap-2 text-xs text-gray-700">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                         <span className="line-clamp-1">{inc}</span>

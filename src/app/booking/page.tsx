@@ -371,7 +371,7 @@ export default function BookingPage() {
                       </div>
                       
                       {/* Package Types Explanation */}
-                      <PackageTypesAccordion />
+                      <PackageTypesAccordion pkgTypes={selectedPkg.packageTypes} />
                     </div>
                   )}
                 </div>

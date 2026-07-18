@@ -6,8 +6,7 @@ import { parseArray } from "@/utils/jsonParser";
 const normalizePackage = (pkg: any) => ({
   ...pkg,
   galleryImages: parseArray(pkg.galleryImages),
-  includes: parseArray(pkg.includes),
-  excludes: parseArray(pkg.excludes),
+  packageTypes: typeof pkg.packageTypes === 'string' ? JSON.parse(pkg.packageTypes) : pkg.packageTypes,
   thingsToBring: parseArray(pkg.thingsToBring),
   itinerary: parseArray(pkg.itinerary),
   faq: parseArray(pkg.faq),

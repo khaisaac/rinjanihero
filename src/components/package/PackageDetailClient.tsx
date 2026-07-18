@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 import { TrekkingPackage, PackageType, PricingTier } from "@/types/cms";
-import PackageTypesAccordion from "../shared/PackageTypesAccordion";
+// import PackageTypesAccordion from "../shared/PackageTypesAccordion";
 
 interface Props {
   pkg: TrekkingPackage;
@@ -277,10 +277,10 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                     </table>
                   </div>
                   
-                  {/* Package Types Explanation */}
-                  <PackageTypesAccordion />
                 </div>
               )}
+              
+
             </div>
 
             {/* Interactive Tabs Navigation */}
@@ -348,35 +348,71 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
 
             {/* Tab 2: Includes / Excludes */}
             {activeTab === "includes" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-in fade-in duration-200">
-                <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
-                  <h4 className="text-lg font-bold text-emerald-800 flex items-center gap-2 pb-3 border-b border-emerald-100">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                    <span>What is Included (All-Inclusive)</span>
-                  </h4>
-                  <ul className="space-y-3">
-                    {parseArray(pkg.includes).map((inc: string, i: number) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{inc}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="space-y-6 animate-in fade-in duration-200">
+                {/* Package Type Switcher */}
+                <div className="flex p-1.5 bg-gray-100 rounded-2xl w-full max-w-lg mx-auto">
+                  {(["Standard", "Private", "Meeting Point"] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setPackageType(type)}
+                      className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
+                        packageType === type
+                          ? "bg-white text-[#18979B] shadow-sm scale-105"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-red-100 space-y-4">
-                  <h4 className="text-lg font-bold text-red-800 flex items-center gap-2 pb-3 border-b border-red-100">
-                    <XCircle className="w-5 h-5 text-red-500" />
-                    <span>What is Excluded</span>
-                  </h4>
-                  <ul className="space-y-3">
-                    {parseArray(pkg.excludes).map((exc: string, i: number) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
-                        <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                        <span>{exc}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {/* Description Rendering */}
+                <div 
+                  className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 text-gray-600 prose prose-sm max-w-none prose-p:leading-relaxed"
+                  dangerouslySetInnerHTML={{ 
+                    __html: pkg.packageTypes?.[
+                      packageType === "Standard" ? "standard" : 
+                      packageType === "Private" ? "private" : "meetingPoint"
+                    ]?.description || "" 
+                  }}
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
+                    <h4 className="text-lg font-bold text-emerald-800 flex items-center gap-2 pb-3 border-b border-emerald-100">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                      <span>What is Included ({packageType})</span>
+                    </h4>
+                    <ul className="space-y-3">
+                      {(pkg.packageTypes?.[
+                        packageType === "Standard" ? "standard" : 
+                        packageType === "Private" ? "private" : "meetingPoint"
+                      ]?.includes || []).map((inc: string, i: number) => (
+                        <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span>{inc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-red-100 space-y-4">
+                    <h4 className="text-lg font-bold text-red-800 flex items-center gap-2 pb-3 border-b border-red-100">
+                      <XCircle className="w-5 h-5 text-red-500" />
+                      <span>What is Excluded ({packageType})</span>
+                    </h4>
+                    <ul className="space-y-3">
+                      {(pkg.packageTypes?.[
+                        packageType === "Standard" ? "standard" : 
+                        packageType === "Private" ? "private" : "meetingPoint"
+                      ]?.excludes || []).map((exc: string, i: number) => (
+                        <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                          <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                          <span>{exc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             )}

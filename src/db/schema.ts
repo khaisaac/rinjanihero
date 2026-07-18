@@ -59,8 +59,7 @@ export const trekkingPackages = mysqlTable("trekking_packages", {
   overview: text("overview").notNull(),
   coverImage: text("cover_image").notNull(),
   galleryImages: json("gallery_images").notNull(), // string[]
-  includes: json("includes").notNull(), // string[]
-  excludes: json("excludes").notNull(), // string[]
+  packageTypes: json("package_types").notNull(), // object
   thingsToBring: json("things_to_bring").notNull(), // string[]
   pricingMatrix: json("pricing_matrix"), // object[]
   itinerary: json("itinerary").notNull(), // object[]

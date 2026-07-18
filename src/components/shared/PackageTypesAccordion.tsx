@@ -4,7 +4,9 @@ import { useState } from "react";
 import { ChevronDown, Info } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 
-export default function PackageTypesAccordion() {
+import { TrekkingPackage } from "@/types/cms";
+
+export default function PackageTypesAccordion({ pkgTypes }: { pkgTypes?: TrekkingPackage['packageTypes'] }) {
   const { settings } = useCMSStore();
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -12,17 +14,17 @@ export default function PackageTypesAccordion() {
     {
       id: "standard",
       title: "Standard Package",
-      description: settings.packageStandardDesc || "Standard packages are designed for budget-conscious trekkers.",
+      description: pkgTypes?.standard?.description || settings.packageStandardDesc || "Standard packages are designed for budget-conscious trekkers.",
     },
     {
       id: "private",
       title: "Private Package",
-      description: settings.packagePrivateDesc || "Private packages offer a premium, personalized trekking experience.",
+      description: pkgTypes?.private?.description || settings.packagePrivateDesc || "Private packages offer a premium, personalized trekking experience.",
     },
     {
       id: "meeting-point",
       title: "Meeting Point Package",
-      description: settings.packageMeetingPointDesc || "Meeting Point packages are perfect for independent travelers.",
+      description: pkgTypes?.meetingPoint?.description || settings.packageMeetingPointDesc || "Meeting Point packages are perfect for independent travelers.",
     },
   ];
 
@@ -57,9 +59,10 @@ export default function PackageTypesAccordion() {
             </button>
 
             {isOpen && (
-              <div className="px-4 sm:px-5 pb-5 pt-1 text-gray-600 text-sm leading-relaxed border-t border-gray-100/60 animate-in fade-in duration-200">
-                {pkg.description}
-              </div>
+              <div 
+                className="px-4 sm:px-5 pb-5 pt-1 text-gray-600 text-sm leading-relaxed border-t border-gray-100/60 animate-in fade-in duration-200 prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: pkg.description }}
+              />
             )}
           </div>
         );

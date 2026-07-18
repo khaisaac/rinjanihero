@@ -19,6 +19,9 @@ import { TrekkingPackage, RouteType, DifficultyLevel } from "@/types/cms";
 import { parseArray } from "@/utils/jsonParser";
 import ImageInputBox from "@/components/admin/ImageInputBox";
 import MultiImageInputBox from "@/components/admin/MultiImageInputBox";
+import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 interface PackageFormModalProps {
   isOpen: boolean;
@@ -49,20 +52,62 @@ const defaultPackage: TrekkingPackage = {
     "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=800&q=80",
   ],
-  includes: [
-    "Licensed English-Speaking Mountain Guide",
+  packageTypes: {
+    standard: {
+      description: "<p>Standard packages are designed for budget-conscious trekkers.</p>",
+      includes: [
+        "Licensed English-Speaking Mountain Guide",
     "Local Experienced Porters for camping gear & food",
     "All National Park Entrance Tickets & E-Ticket Permits",
     "High-Quality Camping Equipment (Tent, Sleeping Bag, Mattress, Toilet Tent)",
     "All Nutritious Meals (Breakfast, Lunch, Dinner, Fresh Fruits, Hot Drinks)",
     "Free Pick-up & Transfer within Lombok Island (Airport/Senggigi/Bangsal)",
-  ],
-  excludes: [
-    "Personal Trekking Gear (Shoes, Warm Jacket, Headlamp)",
+      ],
+      excludes: [
+        "Personal Trekking Gear (Shoes, Warm Jacket, Headlamp)",
     "Personal Porters for private luggage ($25/day)",
     "Tipping for Guide and Porters",
     "International & Domestic Flights",
-  ],
+      ],
+    },
+    private: {
+      description: "<p>Private packages offer a premium, personalized trekking experience.</p>",
+      includes: [
+        "Licensed English-Speaking Mountain Guide",
+    "Local Experienced Porters for camping gear & food",
+    "All National Park Entrance Tickets & E-Ticket Permits",
+    "High-Quality Camping Equipment (Tent, Sleeping Bag, Mattress, Toilet Tent)",
+    "All Nutritious Meals (Breakfast, Lunch, Dinner, Fresh Fruits, Hot Drinks)",
+    "Free Pick-up & Transfer within Lombok Island (Airport/Senggigi/Bangsal)",
+        "Private Guide",
+        "Extra Porters"
+      ],
+      excludes: [
+        "Personal Trekking Gear (Shoes, Warm Jacket, Headlamp)",
+    "Personal Porters for private luggage ($25/day)",
+    "Tipping for Guide and Porters",
+    "International & Domestic Flights",
+      ],
+    },
+    meetingPoint: {
+      description: "<p>Meeting Point packages are perfect for independent travelers.</p>",
+      includes: [
+        "Licensed English-Speaking Mountain Guide",
+    "Local Experienced Porters for camping gear & food",
+    "All National Park Entrance Tickets & E-Ticket Permits",
+    "High-Quality Camping Equipment (Tent, Sleeping Bag, Mattress, Toilet Tent)",
+    "All Nutritious Meals (Breakfast, Lunch, Dinner, Fresh Fruits, Hot Drinks)",
+    "Free Pick-up & Transfer within Lombok Island (Airport/Senggigi/Bangsal)",
+      ],
+      excludes: [
+        "Personal Trekking Gear (Shoes, Warm Jacket, Headlamp)",
+    "Personal Porters for private luggage ($25/day)",
+    "Tipping for Guide and Porters",
+    "International & Domestic Flights",
+        "Transport to/from Senaru"
+      ],
+    },
+  },
   thingsToBring: [
     "Sturdy Trekking Shoes with good grip",
     "Warm Fleece & Windproof Jacket",
@@ -108,26 +153,26 @@ export default function PackageFormModal({
   const [formData, setFormData] = useState<TrekkingPackage>(defaultPackage);
 
   // Helper strings for textarea lists
-  const [includesStr, setIncludesStr] = useState("");
-  const [excludesStr, setExcludesStr] = useState("");
   const [bringStr, setBringStr] = useState("");
   const [galleryStr, setGalleryStr] = useState("");
+  const [pkgTypeTab, setPkgTypeTab] = useState<"standard" | "private" | "meetingPoint">("standard");
+
+  // Local state for Package Types
+  const [pkgTypes, setPkgTypes] = useState(defaultPackage.packageTypes);
 
   useEffect(() => {
     if (initialData) {
       const normalized: TrekkingPackage = {
         ...defaultPackage,
         ...initialData,
-        includes: parseArray(initialData.includes),
-        excludes: parseArray(initialData.excludes),
         thingsToBring: parseArray(initialData.thingsToBring),
         galleryImages: parseArray(initialData.galleryImages),
         itinerary: parseArray(initialData.itinerary),
         faq: parseArray(initialData.faq),
+        packageTypes: initialData.packageTypes || defaultPackage.packageTypes,
       };
       setFormData(normalized);
-      setIncludesStr(normalized.includes.join("\n"));
-      setExcludesStr(normalized.excludes.join("\n"));
+      setPkgTypes(normalized.packageTypes);
       setBringStr(normalized.thingsToBring.join("\n"));
       setGalleryStr(normalized.galleryImages.join("\n"));
     } else {
@@ -137,8 +182,7 @@ export default function PackageFormModal({
         id: newId,
       };
       setFormData(fresh);
-      setIncludesStr(fresh.includes.join("\n"));
-      setExcludesStr(fresh.excludes.join("\n"));
+      setPkgTypes(fresh.packageTypes);
       setBringStr(fresh.thingsToBring.join("\n"));
       setGalleryStr(fresh.galleryImages.join("\n"));
     }
@@ -203,14 +247,6 @@ export default function PackageFormModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const cleanIncludes = includesStr
-      .split("\n")
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-    const cleanExcludes = excludesStr
-      .split("\n")
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
     const cleanBring = bringStr
       .split("\n")
       .map((s) => s.trim())
@@ -222,8 +258,7 @@ export default function PackageFormModal({
 
     const finalPkg: TrekkingPackage = {
       ...formData,
-      includes: cleanIncludes.length > 0 ? cleanIncludes : formData.includes,
-      excludes: cleanExcludes.length > 0 ? cleanExcludes : formData.excludes,
+      packageTypes: pkgTypes,
       thingsToBring: cleanBring.length > 0 ? cleanBring : formData.thingsToBring,
       galleryImages: cleanGallery.length > 0 ? cleanGallery : formData.galleryImages,
       slug: formData.slug || formData.id,
@@ -266,7 +301,7 @@ export default function PackageFormModal({
           {[
             { id: "basic", label: "1. Basic & Pricing", icon: DollarSign },
             { id: "details", label: "2. Overview & Images", icon: FileText },
-            { id: "lists", label: "3. Includes / Excludes", icon: ListCheck },
+            { id: "lists", label: "3. Types & Items", icon: ListCheck },
             { id: "itinerary", label: `4. Itinerary (${formData.itinerary?.length || 0} Days)`, icon: Calendar },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -685,53 +720,96 @@ export default function PackageFormModal({
             </div>
           )}
 
-          {/* TAB 3: INCLUDES / EXCLUDES / WHAT TO BRING */}
+          {/* TAB 3: TYPES & ITEMS */}
           {activeTab === "lists" && (
-            <div className="space-y-5">
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-xs text-amber-800 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 shrink-0 text-amber-600" />
-                <span>Enter each item on a new line. They will be automatically formatted with checkmarks on the website.</span>
+            <div className="space-y-6">
+              {/* Type Switcher */}
+              <div className="flex p-1 bg-gray-100 rounded-2xl">
+                {(["standard", "private", "meetingPoint"] as const).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setPkgTypeTab(type)}
+                    className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
+                      pkgTypeTab === type
+                        ? "bg-white text-[#18979B] shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {type === "standard" ? "Standard" : type === "private" ? "Private" : "Meeting Point"}
+                  </button>
+                ))}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-5 border border-gray-200 rounded-2xl bg-[#F8FAF9] space-y-5">
                 <div>
-                  <label className="block text-xs font-extrabold text-emerald-700 uppercase tracking-wider mb-1">
-                    ✓ Included Services
+                  <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-2">
+                    {pkgTypeTab} Package Description
                   </label>
-                  <textarea
-                    rows={8}
-                    value={includesStr}
-                    onChange={(e) => setIncludesStr(e.target.value)}
-                    className="w-full p-3 rounded-2xl border border-emerald-300 bg-emerald-50/30 text-xs font-medium leading-relaxed focus:outline-none focus:border-emerald-500"
-                    placeholder="Licensed guide&#10;Porters&#10;Equipment&#10;All meals"
-                  />
+                  <div className="bg-white rounded-xl overflow-hidden border border-gray-300">
+                    <ReactQuill
+                      theme="snow"
+                      value={pkgTypes[pkgTypeTab].description}
+                      onChange={(content) =>
+                        setPkgTypes({
+                          ...pkgTypes,
+                          [pkgTypeTab]: { ...pkgTypes[pkgTypeTab], description: content },
+                        })
+                      }
+                      className="h-32 mb-10"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-extrabold text-red-700 uppercase tracking-wider mb-1">
-                    ✕ Excluded Services
-                  </label>
-                  <textarea
-                    rows={8}
-                    value={excludesStr}
-                    onChange={(e) => setExcludesStr(e.target.value)}
-                    className="w-full p-3 rounded-2xl border border-red-300 bg-red-50/30 text-xs font-medium leading-relaxed focus:outline-none focus:border-red-500"
-                    placeholder="Flights&#10;Tips for crew&#10;Personal clothing"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-extrabold text-emerald-700 uppercase tracking-wider mb-1">
+                      ✓ Included Services
+                    </label>
+                    <textarea
+                      rows={6}
+                      value={pkgTypes[pkgTypeTab].includes.join("\n")}
+                      onChange={(e) => {
+                        const arr = e.target.value.split("\n");
+                        setPkgTypes({
+                          ...pkgTypes,
+                          [pkgTypeTab]: { ...pkgTypes[pkgTypeTab], includes: arr },
+                        });
+                      }}
+                      className="w-full p-3 rounded-2xl border border-emerald-300 bg-emerald-50/30 text-xs font-medium leading-relaxed focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-red-700 uppercase tracking-wider mb-1">
+                      ✕ Excluded Services
+                    </label>
+                    <textarea
+                      rows={6}
+                      value={pkgTypes[pkgTypeTab].excludes.join("\n")}
+                      onChange={(e) => {
+                        const arr = e.target.value.split("\n");
+                        setPkgTypes({
+                          ...pkgTypes,
+                          [pkgTypeTab]: { ...pkgTypes[pkgTypeTab], excludes: arr },
+                        });
+                      }}
+                      className="w-full p-3 rounded-2xl border border-red-300 bg-red-50/30 text-xs font-medium leading-relaxed focus:outline-none focus:border-red-500"
+                    />
+                  </div>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-extrabold text-[#18979B] uppercase tracking-wider mb-1">
-                    🎒 Things to Bring
-                  </label>
-                  <textarea
-                    rows={8}
-                    value={bringStr}
-                    onChange={(e) => setBringStr(e.target.value)}
-                    className="w-full p-3 rounded-2xl border border-[#18979B]/30 bg-[#F8FAF9] text-xs font-medium leading-relaxed focus:outline-none focus:border-[#18979B]"
-                    placeholder="Trekking shoes&#10;Fleece jacket&#10;Headlamp&#10;Sunscreen"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-extrabold text-[#18979B] uppercase tracking-wider mb-1">
+                  🎒 Things to Bring (Global for this Package)
+                </label>
+                <textarea
+                  rows={4}
+                  value={bringStr}
+                  onChange={(e) => setBringStr(e.target.value)}
+                  className="w-full p-3 rounded-2xl border border-[#18979B]/30 bg-[#F8FAF9] text-xs font-medium leading-relaxed focus:outline-none focus:border-[#18979B]"
+                  placeholder="Trekking shoes&#10;Fleece jacket&#10;Headlamp"
+                />
               </div>
             </div>
           )}
