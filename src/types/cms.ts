@@ -172,6 +172,15 @@ export interface BookingOrder {
     children: number;
     extraPorters: number;
     privateGuide: boolean;
+    additionalTravelers?: {
+      fullName: string;
+      nationality: string;
+      passportNumber?: string;
+      birthday?: string;
+      height?: string;
+      weight?: string;
+      dietaryNotes?: string;
+    }[];
   };
   customer: {
     fullName: string;
@@ -180,6 +189,9 @@ export interface BookingOrder {
     whatsapp: string;
     nationality: string;
     passportNumber?: string;
+    birthday?: string;
+    height?: string;
+    weight?: string;
     dietaryNotes?: string;
     pickupLocation?: string;
   };
@@ -225,4 +237,7 @@ export interface WebsiteSettings {
   heroHeading: string;
   heroSubheading: string;
   heroBackgroundImage: string;
+  packageStandardDesc?: string;
+  packagePrivateDesc?: string;
+  packageMeetingPointDesc?: string;
 }

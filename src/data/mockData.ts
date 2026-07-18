@@ -30,6 +30,9 @@ export const initialWebsiteSettings: WebsiteSettings = {
   heroHeading: "Explore The Majestic Beauty of Mount Rinjani",
   heroSubheading: "Discover breathtaking summit views, hidden Torean waterfalls, and emerald crater lakes with Lombok's most trusted local guides, certified safety gear, and all-inclusive packages.",
   heroBackgroundImage: "/hero-rinjani.webp",
+  packageStandardDesc: "Standard packages are designed for budget-conscious trekkers who want to experience Mount Rinjani without breaking the bank. You will join a group of other trekkers (max 10 people) and share the facilities. This includes standard camping equipment, shared porter for group logistics, and basic meals.",
+  packagePrivateDesc: "Private packages offer a premium, personalized trekking experience. You will have your own private guide and porters, ensuring a flexible pace. This package includes premium camping equipment, private transport, high-quality meals, and personalized attention throughout the journey.",
+  packageMeetingPointDesc: "Meeting Point packages are perfect for independent travelers who prefer to arrange their own transport and accommodation before the trek. You simply meet our team at the designated starting point (Senaru or Sembalun) on the morning of the trek. This includes all trekking necessities but excludes pre/post-trek logistics.",
 };
 
 export const initialRoutes: RouteInfo[] = [

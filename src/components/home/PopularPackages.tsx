@@ -80,8 +80,9 @@ export default function PopularPackages() {
         {/* Packages Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPackages.map((pkg) => (
-            <div
+            <Link
               key={pkg.id}
+              href={`/packages/${pkg.slug}`}
               className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col group transform hover:-translate-y-1.5"
             >
               {/* Image Header */}
@@ -147,11 +148,9 @@ export default function PopularPackages() {
                     <span>Max Altitude: {pkg.maxAltitude}</span>
                   </div>
 
-                  <Link href={`/packages/${pkg.slug}`}>
-                    <h3 className="text-xl font-extrabold text-[#122826] group-hover:text-[#18979B] transition line-clamp-2">
-                      {pkg.title}
-                    </h3>
-                  </Link>
+                  <h3 className="text-xl font-extrabold text-[#122826] group-hover:text-[#18979B] transition line-clamp-2">
+                    {pkg.title}
+                  </h3>
 
                   <p className="text-gray-600 text-xs sm:text-sm mt-2 line-clamp-3 leading-relaxed">
                     {pkg.shortDescription}
@@ -177,27 +176,9 @@ export default function PopularPackages() {
                       <span className="text-xs text-gray-500 font-medium">/ person</span>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href={`/packages/${pkg.slug}`}
-                      className="px-3.5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-[#122826] font-bold text-xs transition flex items-center gap-1"
-                    >
-                      <span>Detail</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-
-                    <button
-                      onClick={() => handleQuickBook(pkg)}
-                      className="px-4 py-2.5 rounded-xl bg-[#18979B] hover:bg-[#13797C] text-white font-bold text-xs shadow hover:shadow-md transition flex items-center gap-1.5"
-                    >
-                      <CalendarCheck className="w-3.5 h-3.5" />
-                      <span>Book Now</span>
-                    </button>
-                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

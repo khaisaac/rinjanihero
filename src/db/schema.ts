@@ -20,6 +20,9 @@ export const websiteSettings = mysqlTable("website_settings", {
   heroHeading: varchar("hero_heading", { length: 255 }).notNull(),
   heroSubheading: text("hero_subheading").notNull(),
   heroBackgroundImage: text("hero_background_image").notNull(),
+  packageStandardDesc: text("package_standard_desc"),
+  packagePrivateDesc: text("package_private_desc"),
+  packageMeetingPointDesc: text("package_meeting_point_desc"),
 });
 
 // 2. Routes Info

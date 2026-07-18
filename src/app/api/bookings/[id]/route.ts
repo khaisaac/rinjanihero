@@ -21,10 +21,15 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       (body.paymentStatus === "Deposit Paid" || body.paymentStatus === "Fully Paid") &&
       existingBooking.paymentStatus !== body.paymentStatus;
 
+    console.log(`[API PUT] Booking ID: ${id}`);
+    console.log(`[API PUT] Old Status: ${existingBooking.paymentStatus} -> New Status: ${body.paymentStatus}`);
+    console.log(`[API PUT] Trigger Email? ${statusChangedToPaid}`);
+
     await db.update(bookingOrders).set(body).where(eq(bookingOrders.id, id));
 
     // If admin changed status to paid, trigger the email
     if (statusChangedToPaid) {
+      console.log(`[API PUT] Fetching package data and sending email...`);
       let packageData = null;
       // Need to import trekkingPackages
       const { trekkingPackages } = await import("@/db/schema");

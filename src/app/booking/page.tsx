@@ -21,6 +21,7 @@ import {
 import confetti from "canvas-confetti";
 import { useCMSStore } from "@/store/cmsStore";
 import { ServiceType, Voucher, PackageType } from "@/types/cms";
+import PackageTypesAccordion from "@/components/shared/PackageTypesAccordion";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -38,8 +39,8 @@ export default function BookingPage() {
     bookingPrefill?.date || new Date(Date.now() + 86400000 * 10).toISOString().split("T")[0]
   );
   const [adults, setAdults] = useState<number>(bookingPrefill?.adults || 2);
-  const [children, setChildren] = useState<number>(0);
-  const [extraPorters, setExtraPorters] = useState<number>(0);
+  const children = 0;
+  const extraPorters = 0;
 
   // Customer details
   const [fullName, setFullName] = useState("");
@@ -48,8 +49,30 @@ export default function BookingPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [nationality, setNationality] = useState("United States");
   const [passportNumber, setPassportNumber] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
   const [dietaryNotes, setDietaryNotes] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
+
+  const [additionalTravelers, setAdditionalTravelers] = useState<
+    { fullName: string; nationality: string; passportNumber: string; birthday: string; height: string; weight: string; dietaryNotes: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (adults > 1) {
+      setAdditionalTravelers(prev => {
+        const count = adults - 1;
+        if (prev.length === count) return prev;
+        if (prev.length < count) {
+          return [...prev, ...Array(count - prev.length).fill({ fullName: "", nationality: "United States", passportNumber: "", birthday: "", height: "", weight: "", dietaryNotes: "" })];
+        }
+        return prev.slice(0, count);
+      });
+    } else {
+      setAdditionalTravelers([]);
+    }
+  }, [adults]);
 
   // Voucher
   const [voucherInput, setVoucherInput] = useState("");
@@ -109,8 +132,7 @@ export default function BookingPage() {
       basePricePerPerson = selectedPkg.priceUSD;
     }
 
-    subtotal = basePricePerPerson * (adults + children * 0.8);
-    if (extraPorters > 0) extrasTotal += extraPorters * 45;
+    subtotal = basePricePerPerson * adults;
   } else if (serviceType === "Transportation" && selectedTrans) {
     basePricePerPerson = selectedTrans.priceUSD;
     subtotal = selectedTrans.priceUSD; // per vehicle
@@ -194,6 +216,7 @@ export default function BookingPage() {
         children,
         extraPorters,
         privateGuide: packageType === "Private",
+        additionalTravelers,
       },
       customer: {
         fullName,
@@ -202,6 +225,9 @@ export default function BookingPage() {
         whatsapp,
         nationality,
         passportNumber: passportNumber || undefined,
+        birthday: birthday || undefined,
+        height: height || undefined,
+        weight: weight || undefined,
         dietaryNotes: dietaryNotes || "None",
         pickupLocation: pickupLocation || "TBD / Direct Senaru Check-in",
       },
@@ -343,6 +369,9 @@ export default function BookingPage() {
                           </tbody>
                         </table>
                       </div>
+                      
+                      {/* Package Types Explanation */}
+                      <PackageTypesAccordion />
                     </div>
                   )}
                 </div>
@@ -387,117 +416,11 @@ export default function BookingPage() {
               )}
             </div>
 
-            {/* Section 2: Date & Participants */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
-              <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2 pb-3 border-b border-gray-100">
-                <CalendarCheck className="w-5 h-5 text-[#18979B]" />
-                <span>2. Date & Participants</span>
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    Target Trek / Service Date *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={trekDate}
-                    onChange={(e) => setTrekDate(e.target.value)}
-                    className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm font-bold text-[#122826] focus:outline-none focus:border-[#18979B]"
-                    min={new Date().toISOString().split("T")[0]}
-                  />
-                  <span className="text-[11px] text-gray-500 mt-1 block">100% Free date change up to 7 days before</span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    Adult Trekkers (12+ yrs) *
-                  </label>
-                  <div className="flex items-center justify-between bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-2">
-                    <span className="text-sm font-bold text-[#122826]">{adults} Adults</span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setAdults(Math.max(1, adults - 1))}
-                        className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                      >
-                        -
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setAdults(adults + 1)}
-                        className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {serviceType === "Trekking" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center justify-between">
-                      <span>Children (Under 12 yrs)</span>
-                      <span className="text-emerald-600 lowercase font-normal">20% Discount</span>
-                    </label>
-                    <div className="flex items-center justify-between bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-2">
-                      <span className="text-sm font-bold text-[#122826]">{children} Children</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setChildren(Math.max(0, children - 1))}
-                          className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                        >
-                          -
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChildren(children + 1)}
-                          className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center justify-between">
-                      <span>Extra Personal Porter ($45)</span>
-                      <span className="text-gray-400 lowercase font-normal">Optional</span>
-                    </label>
-                    <div className="flex items-center justify-between bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-2">
-                      <span className="text-sm font-bold text-[#122826]">{extraPorters} Porter</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setExtraPorters(Math.max(0, extraPorters - 1))}
-                          className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                        >
-                          -
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setExtraPorters(extraPorters + 1)}
-                          className="w-8 h-8 rounded-xl bg-white border border-gray-300 font-bold text-sm"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Section 3: Lead Traveler & Contact Info */}
+            {/* Section 2: Lead Traveler & Contact Info */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
               <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2 pb-3 border-b border-gray-100">
                 <Users className="w-5 h-5 text-[#18979B]" />
-                <span>3. Lead Traveler Details</span>
+                <span>2. Lead Traveler Details</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -583,6 +506,44 @@ export default function BookingPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    Date of Birth *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    Height (cm) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    placeholder="e.g. 175"
+                    className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    Weight (kg) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="e.g. 70"
+                    className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                  />
+                </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                     Dietary Notes / Allergies (Vegetarian, Vegan, Gluten-Free, No Peanuts, etc.)
@@ -597,6 +558,138 @@ export default function BookingPage() {
                 </div>
               </div>
             </div>
+
+            {/* Additional Travelers Loop */}
+            {additionalTravelers.map((traveler, index) => (
+              <div key={index} className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
+                <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2 pb-3 border-b border-gray-100">
+                  <Users className="w-5 h-5 text-gray-400" />
+                  <span>Traveler {index + 2} Details</span>
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Full Name (As on Passport) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={traveler.fullName}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], fullName: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="e.g. Sarah Connor"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Nationality / Country *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={traveler.nationality}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], nationality: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="United States"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Passport Number
+                    </label>
+                    <input
+                      type="text"
+                      value={traveler.passportNumber}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], passportNumber: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="(Or send via WhatsApp later)"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Date of Birth *
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={traveler.birthday}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], birthday: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Height (cm) *
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      value={traveler.height}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], height: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="e.g. 175"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Weight (kg) *
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      value={traveler.weight}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], weight: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="e.g. 70"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Dietary Notes
+                    </label>
+                    <input
+                      type="text"
+                      value={traveler.dietaryNotes}
+                      onChange={(e) => {
+                        const newTravelers = [...additionalTravelers];
+                        newTravelers[index] = { ...newTravelers[index], dietaryNotes: e.target.value };
+                        setAdditionalTravelers(newTravelers);
+                      }}
+                      placeholder="Optional"
+                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm text-[#122826] placeholder-gray-400 focus:outline-none focus:border-[#18979B]"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Right Sticky Order Summary Box Column (4 spans) */}
@@ -616,32 +709,57 @@ export default function BookingPage() {
                     {packageType} Package
                   </p>
                 )}
-                <p className="text-xs text-gray-300 mt-1 flex items-center gap-1.5">
-                  <CalendarCheck className="w-3.5 h-3.5 text-[#18979B]" />
-                  <span>Date: {trekDate}</span>
-                </p>
+              </div>
+
+              {/* Form inside Order Summary */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2">
+                    Target Trek / Service Date *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={trekDate}
+                    onChange={(e) => setTrekDate(e.target.value)}
+                    className="w-full bg-[#1A2E2C] border border-white/20 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:border-[#18979B] placeholder-gray-400"
+                    min={new Date().toISOString().split("T")[0]}
+                    style={{ colorScheme: 'dark' }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2">
+                    Adult Trekkers (12+ yrs) *
+                  </label>
+                  <div className="flex items-center justify-between bg-[#1A2E2C] border border-white/20 rounded-xl px-4 py-2">
+                    <span className="text-sm font-bold text-white">{adults} Adults</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAdults(Math.max(1, adults - 1))}
+                        className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition"
+                      >
+                        -
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAdults(adults + 1)}
+                        className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-2.5 text-xs">
+              <div className="space-y-2.5 text-xs pt-4 border-t border-white/10">
                 <div className="flex items-center justify-between text-gray-300">
                   <span>Base Price ({adults} Adults):</span>
                   <span className="font-bold text-white">${basePricePerPerson * adults}</span>
                 </div>
-
-                {children > 0 && (
-                  <div className="flex items-center justify-between text-gray-300">
-                    <span>Children ({children} Kids):</span>
-                    <span className="font-bold text-white">${Math.round(basePricePerPerson * children * 0.8)}</span>
-                  </div>
-                )}
-
-                {extraPorters > 0 && (
-                  <div className="flex items-center justify-between text-gray-300">
-                    <span>Extra Porters ({extraPorters}):</span>
-                    <span className="font-bold text-white">${extraPorters * 45}</span>
-                  </div>
-                )}
 
                 {voucherDiscountUSD > 0 && (
                   <div className="flex items-center justify-between text-emerald-400 font-bold bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/30">

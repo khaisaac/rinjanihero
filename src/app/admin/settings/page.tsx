@@ -12,6 +12,9 @@ export default function AdminSettingsPage() {
   const [phone, setPhone] = useState(settings.contactPhone);
   const [email, setEmail] = useState(settings.contactEmail);
   const [address, setAddress] = useState(settings.officeAddress || settings.address);
+  const [packageStandardDesc, setPackageStandardDesc] = useState(settings.packageStandardDesc || "");
+  const [packagePrivateDesc, setPackagePrivateDesc] = useState(settings.packagePrivateDesc || "");
+  const [packageMeetingPointDesc, setPackageMeetingPointDesc] = useState(settings.packageMeetingPointDesc || "");
   const [savedMsg, setSavedMsg] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
@@ -24,19 +27,22 @@ export default function AdminSettingsPage() {
       contactEmail: email,
       address,
       officeAddress: address,
+      packageStandardDesc,
+      packagePrivateDesc,
+      packageMeetingPointDesc,
     });
     setSavedMsg(true);
     setTimeout(() => setSavedMsg(false), 3000);
   };
 
   return (
-    <AdminLayout title="System & Basecamp Settings" subtitle="Configure hotline numbers, basecamp office location, and National Park API credentials">
+    <AdminLayout title="System & Basecamp Settings" subtitle="Configure hotline numbers, basecamp office location, and package explanations">
       <div className="max-w-3xl space-y-6">
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100">
             <h3 className="text-lg font-bold text-[#122826] flex items-center gap-2">
               <PhoneCall className="w-5 h-5 text-[#18979B]" />
-              <span>Contact & Hotline Configuration</span>
+              <span>Contact & Configuration</span>
             </h3>
             {savedMsg && (
               <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full flex items-center gap-1 animate-in fade-in">
@@ -94,6 +100,40 @@ export default function AdminSettingsPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm font-bold text-[#122826] focus:outline-none focus:border-[#18979B]"
+                />
+              </div>
+
+              <div className="sm:col-span-2 pt-4 border-t border-gray-100">
+                <h4 className="text-sm font-bold text-[#122826] mb-4">Package Type Explanations</h4>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Standard Package Description</label>
+                <textarea
+                  value={packageStandardDesc}
+                  onChange={(e) => setPackageStandardDesc(e.target.value)}
+                  rows={3}
+                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Private Package Description</label>
+                <textarea
+                  value={packagePrivateDesc}
+                  onChange={(e) => setPackagePrivateDesc(e.target.value)}
+                  rows={3}
+                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Meeting Point Package Description</label>
+                <textarea
+                  value={packageMeetingPointDesc}
+                  onChange={(e) => setPackageMeetingPointDesc(e.target.value)}
+                  rows={3}
+                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
                 />
               </div>
             </div>

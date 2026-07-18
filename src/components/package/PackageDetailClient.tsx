@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 import { TrekkingPackage, PackageType, PricingTier } from "@/types/cms";
+import PackageTypesAccordion from "../shared/PackageTypesAccordion";
 
 interface Props {
   pkg: TrekkingPackage;
@@ -275,6 +276,9 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                       </tbody>
                     </table>
                   </div>
+                  
+                  {/* Package Types Explanation */}
+                  <PackageTypesAccordion />
                 </div>
               )}
             </div>
