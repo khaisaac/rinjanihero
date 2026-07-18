@@ -23,6 +23,9 @@ export async function GET() {
   await addColumn("booking_orders", "service_type VARCHAR(100) NULL DEFAULT 'Trekking'");
   await addColumn("booking_orders", "package_id VARCHAR(100) NULL");
   await addColumn("trekking_packages", "pricing_matrix JSON NULL");
+  await addColumn("trekking_packages", "related_package_ids JSON NULL");
+  await addColumn("trekking_packages", "seo_title VARCHAR(255) NULL DEFAULT 'Trekking Package'");
+  await addColumn("trekking_packages", "seo_description TEXT NULL");
 
   return NextResponse.json({ success: true, results });
 }
