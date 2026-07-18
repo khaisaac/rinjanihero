@@ -65,6 +65,10 @@ export async function POST(request: Request) {
 
     // 4. Determine Payment Status (Deposit vs Full)
     const pricing = typeof booking.pricing === "string" ? JSON.parse(booking.pricing as string) : booking.pricing;
+    const customer = typeof booking.customer === "string" ? JSON.parse(booking.customer as string) : booking.customer;
+    const participants = typeof booking.participants === "string" ? JSON.parse(booking.participants as string) : booking.participants;
+    const trackingSource = typeof booking.trackingSource === "string" ? JSON.parse(booking.trackingSource as string) : booking.trackingSource;
+    
     const totalUSD = pricing.totalUSD;
     
     // Using 18000 as the exchange rate
@@ -90,7 +94,14 @@ export async function POST(request: Request) {
       if (pkg) packageData = pkg;
     }
 
-    const updatedBooking = { ...booking, ...updatedFields };
+    const updatedBooking = { 
+      ...booking, 
+      ...updatedFields,
+      pricing,
+      customer,
+      participants,
+      trackingSource
+    };
     await sendBookingConfirmationEmails(updatedBooking, packageData);
 
     console.log(`[DOKU Webhook] Successfully processed and sent emails for booking: ${invoiceNumber} (${newPaymentStatus})`);
