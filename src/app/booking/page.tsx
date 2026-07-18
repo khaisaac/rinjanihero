@@ -303,6 +303,48 @@ export default function BookingPage() {
                       </div>
                     </div>
                   )}
+
+                  {selectedPkg && selectedPkg.pricingMatrix && selectedPkg.pricingMatrix.length > 0 && (
+                    <div className="pt-4 border-t border-gray-100 space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                          Select Package Type:
+                        </label>
+                        <select
+                          value={packageType}
+                          onChange={(e) => setPackageType(e.target.value as PackageType)}
+                          className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm font-bold text-[#122826] focus:outline-none focus:border-[#18979B]"
+                        >
+                          <option value="Private">Private Package</option>
+                          <option value="Standard">Standard Package</option>
+                          <option value="Meeting Point">Meeting Point Package</option>
+                        </select>
+                      </div>
+
+                      <div className="overflow-x-auto border border-gray-200 rounded-xl">
+                        <table className="w-full text-left border-collapse min-w-[400px]">
+                          <thead>
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Group Size</th>
+                              <th className="px-4 py-3 text-xs font-bold text-[#D4A017] uppercase bg-amber-50/50">Private</th>
+                              <th className="px-4 py-3 text-xs font-bold text-[#18979B] uppercase">Standard</th>
+                              <th className="px-4 py-3 text-xs font-bold text-gray-600 uppercase">Meeting Point</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {selectedPkg.pricingMatrix.map((tier, idx) => (
+                              <tr key={idx} className="hover:bg-gray-50 transition">
+                                <td className="px-4 py-3 text-sm font-bold text-[#122826]">{tier.groupSize}</td>
+                                <td className="px-4 py-3 text-sm font-extrabold text-[#D4A017] bg-amber-50/30">${tier.pricePrivate}</td>
+                                <td className="px-4 py-3 text-sm font-bold text-[#18979B]">${tier.priceStandard}</td>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-600">${tier.priceMeetingPoint}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
