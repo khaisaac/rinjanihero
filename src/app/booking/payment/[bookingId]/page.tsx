@@ -211,36 +211,10 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  <div className="space-y-3">
-                    {[
-                      { id: "card", label: "Credit or Debit Card", icon: CreditCard, sub: "Visa, Mastercard, JCB, American Express" },
-                      { id: "va", label: "Bank Virtual Account", icon: Building2, sub: "BCA, Bank Mandiri, BNI, BRI Virtual Account" },
-                      { id: "qris", label: "QRIS Instant Scan", icon: QrCode, sub: "OVO, GoPay, Dana, ShopeePay, Mobile Banking" },
-                    ].map((m) => {
-                      const IconComp = m.icon;
-                      return (
-                        <div
-                          key={m.id}
-                          onClick={() => setPaymentMethod(m.id as any)}
-                          className={`p-4 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                            paymentMethod === m.id
-                              ? "bg-[#18979B]/10 border-[#18979B] shadow-sm"
-                              : "bg-[#F8FAF9] border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3.5">
-                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#18979B] shadow-sm">
-                              <IconComp className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-bold text-[#122826]">{m.label}</h4>
-                              <p className="text-xs text-gray-500">{m.sub}</p>
-                            </div>
-                          </div>
-                          <input type="radio" checked={paymentMethod === m.id} readOnly className="text-[#18979B]" />
-                        </div>
-                      );
-                    })}
+                  <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                    <p className="text-xs text-emerald-800 font-medium">
+                      You will be redirected to the secure DOKU Payment Gateway page to complete your transaction. DOKU supports Credit Cards, Virtual Accounts, e-Wallets, and QRIS.
+                    </p>
                   </div>
 
                   {/* Payment Simulation Action CTA */}
