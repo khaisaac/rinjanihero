@@ -198,10 +198,6 @@ export default function Footer() {
               <CreditCard className="w-4 h-4 text-[#D4A017]" />
               <span>Secure DOKU Payment Gateway</span>
             </span>
-            <span className="text-gray-500">|</span>
-            <Link href="/admin" className="hover:text-[#18979B] transition">
-              Basecamp Login
-            </Link>
           </div>
         </div>
       </div>
