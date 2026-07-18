@@ -298,38 +298,6 @@ export default function BookingPage() {
 
               {serviceType === "Trekking" && (
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                      Select Trekking Itinerary:
-                    </label>
-                    <select
-                      value={selectedPackageId}
-                      onChange={(e) => setSelectedPackageId(e.target.value)}
-                      className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3.5 text-sm font-bold text-[#122826] focus:outline-none focus:border-[#18979B]"
-                    >
-                      {packages.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.title} — ${p.priceUSD} USD / person ({p.durationDays}D/{p.durationNights}N)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {selectedPkg && (
-                    <div className="p-5 rounded-2xl bg-gradient-to-r from-[#18979B]/10 to-transparent border border-[#18979B]/30 space-y-3">
-                      <div className="flex items-center justify-between text-sm font-bold text-[#122826]">
-                        <span>Route: {selectedPkg.route.toUpperCase()}</span>
-                        <span className="text-[#18979B]">Difficulty: {selectedPkg.difficulty}</span>
-                      </div>
-                      <p className="text-xs text-gray-600 leading-relaxed">{selectedPkg.shortDescription}</p>
-                      <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold text-emerald-800">
-                        <span className="bg-emerald-100 px-2.5 py-1 rounded-lg">✓ Official E-Ticket Included</span>
-                        <span className="bg-emerald-100 px-2.5 py-1 rounded-lg">✓ Guide & Porters Included</span>
-                        <span className="bg-emerald-100 px-2.5 py-1 rounded-lg">✓ 1-Night Pre-Trek Hotel</span>
-                      </div>
-                    </div>
-                  )}
-
                   {selectedPkg && selectedPkg.pricingMatrix && selectedPkg.pricingMatrix.length > 0 && (
                     <div className="pt-4 border-t border-gray-100 space-y-4">
                       <div>

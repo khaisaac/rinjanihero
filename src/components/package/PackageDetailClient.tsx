@@ -40,7 +40,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
   const [activeTab, setActiveTab] = useState<"itinerary" | "includes" | "gear" | "faq">("itinerary");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [checkedGear, setCheckedGear] = useState<Record<number, boolean>>({});
-  const [participants, setParticipants] = useState<number>(2);
+  const [participants, setParticipants] = useState<number>(1);
   const [packageType, setPackageType] = useState<PackageType>("Standard");
   const [trekDate, setTrekDate] = useState<string>(
     new Date(Date.now() + 86400000 * 10).toISOString().split("T")[0]
@@ -538,44 +538,44 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
 
           {/* Right Sticky Booking Summary Box Column (4 spans) */}
           <div className="lg:col-span-4 lg:sticky lg:top-28">
-            <div className="glass-dark p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 text-white space-y-6">
-              <div className="pb-4 border-b border-white/10 flex items-center justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-200 text-[#122826] space-y-6">
+              <div className="pb-4 border-b border-gray-100 flex items-center justify-between">
                 <div>
                   <span className="text-xs text-[#D4A017] uppercase font-extrabold tracking-wider block">Total Price ({participants} pax)</span>
                   <div className="flex items-baseline gap-1.5 mt-0.5">
-                    <span className="text-3xl font-black text-white">${grandTotal}</span>
-                    <span className="text-xs text-gray-300 font-medium">USD</span>
+                    <span className="text-3xl font-black text-[#122826]">${grandTotal}</span>
+                    <span className="text-xs text-gray-500 font-medium">USD</span>
                   </div>
                 </div>
                 <div className="text-right flex flex-col gap-1 items-end">
-                  <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-400/30">
+                  <span className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-100">
                     Deposit {pkg.depositPercentage}%
                   </span>
-                  <span className="text-xs text-gray-400">${basePricePerPerson}/person</span>
+                  <span className="text-xs text-gray-500">${basePricePerPerson}/person</span>
                 </div>
               </div>
 
               {/* Booking Customization Controls */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
                     Target Trekking Date
                   </label>
                   <input
                     type="date"
                     value={trekDate}
                     onChange={(e) => setTrekDate(e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#18979B] cursor-pointer"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#122826] font-semibold focus:outline-none focus:border-[#18979B] cursor-pointer"
                     min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider flex items-center justify-between">
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider flex items-center justify-between">
                     <span>Number of Trekkers</span>
                     <span className="text-[#D4A017] lowercase font-normal">Discount for 4+</span>
                   </label>
-                  <div className="flex items-center justify-between bg-white/10 border border-white/20 rounded-xl px-4 py-2.5">
+                  <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
                     <div className="flex items-center gap-2.5 text-sm font-semibold">
                       <Users className="w-4 h-4 text-[#18979B]" />
                       <span>{participants} {participants === 1 ? "Person" : "People"}</span>
@@ -584,14 +584,14 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                       <button
                         type="button"
                         onClick={() => setParticipants(Math.max(1, participants - 1))}
-                        className="w-8 h-8 rounded-lg bg-white/15 hover:bg-[#18979B] font-bold transition flex items-center justify-center text-sm"
+                        className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-[#18979B] hover:text-white text-gray-700 font-bold transition flex items-center justify-center text-sm"
                       >
                         -
                       </button>
                       <button
                         type="button"
                         onClick={() => setParticipants(participants + 1)}
-                        className="w-8 h-8 rounded-lg bg-white/15 hover:bg-[#18979B] font-bold transition flex items-center justify-center text-sm"
+                        className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-[#18979B] hover:text-white text-gray-700 font-bold transition flex items-center justify-center text-sm"
                       >
                         +
                       </button>
@@ -602,7 +602,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 {/* Package Type Selector */}
                 {pkg.pricingMatrix && pkg.pricingMatrix.length > 0 && (
                   <div>
-                    <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
                       Select Package Type
                     </label>
                     <div className="grid grid-cols-1 gap-2">
@@ -612,8 +612,8 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                           onClick={() => setPackageType(ptype as PackageType)}
                           className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
                             packageType === ptype
-                              ? ptype === "Private" ? "bg-[#D4A017]/20 border-[#D4A017] text-white" : "bg-[#18979B]/20 border-[#18979B] text-white"
-                              : "bg-white/5 border-white/10 text-gray-300 hover:border-white/30"
+                              ? ptype === "Private" ? "bg-amber-50 border-[#D4A017] text-[#122826]" : "bg-emerald-50 border-[#18979B] text-[#122826]"
+                              : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
@@ -623,11 +623,11 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                               <Square className="w-5 h-5 text-gray-400 shrink-0" />
                             )}
                             <div>
-                              <h5 className={`text-xs font-bold ${packageType === ptype ? 'text-white' : 'text-gray-300'}`}>{ptype} Package</h5>
+                              <h5 className={`text-xs font-bold ${packageType === ptype ? 'text-[#122826]' : 'text-gray-600'}`}>{ptype} Package</h5>
                             </div>
                           </div>
                           {activeTier && (
-                            <span className={`text-xs font-extrabold ${ptype === "Private" ? "text-[#D4A017]" : "text-white"}`}>
+                            <span className={`text-xs font-extrabold ${ptype === "Private" ? "text-[#D4A017]" : "text-[#18979B]"}`}>
                               ${ptype === "Private" ? activeTier.pricePrivate : ptype === "Standard" ? activeTier.priceStandard : activeTier.priceMeetingPoint} / pax
                             </span>
                           )}
@@ -639,16 +639,16 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
               </div>
 
               {/* Price Breakdown */}
-              <div className="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-gray-300">
+              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 space-y-2 text-xs">
+                <div className="flex items-center justify-between text-gray-600">
                   <span>Base ({participants} × ${basePricePerPerson}):</span>
-                  <span className="font-bold text-white">${grandTotal}</span>
+                  <span className="font-bold text-[#122826]">${grandTotal}</span>
                 </div>
-                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-sm font-extrabold text-white">
+                <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-sm font-extrabold text-[#122826]">
                   <span>Grand Total:</span>
                   <span className="text-[#D4A017]">${grandTotal} USD</span>
                 </div>
-                <div className="flex items-center justify-between text-emerald-400 font-semibold pt-1">
+                <div className="flex items-center justify-between text-emerald-600 font-bold pt-1">
                   <span>Required Deposit ({pkg.depositPercentage}%):</span>
                   <span>${depositAmount} USD</span>
                 </div>
@@ -663,8 +663,8 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 <span>Proceed to Booking</span>
               </button>
 
-              <div className="text-center text-[11px] text-gray-300 space-y-1">
-                <div className="flex items-center justify-center gap-1.5 text-emerald-400 font-medium">
+              <div className="text-center text-[11px] text-gray-500 space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-emerald-600 font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Instant E-Ticket Barcode & Insurance Included</span>
                 </div>
