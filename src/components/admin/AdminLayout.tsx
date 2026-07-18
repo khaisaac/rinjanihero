@@ -17,6 +17,7 @@ import {
   Bell,
   Search,
   ExternalLink,
+  Camera,
 } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 
@@ -79,6 +80,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
     { name: "Overview Analytics", href: "/admin", icon: LayoutDashboard },
     { name: "Bookings & Permits", href: "/admin/bookings", icon: CalendarCheck, badge: pendingCount > 0 ? pendingCount : undefined },
     { name: "Packages & Routes", href: "/admin/packages", icon: Compass },
+    { name: "Expedition Gallery", href: "/admin/gallery", icon: Camera },
     { name: "Vouchers & Promos", href: "/admin/vouchers", icon: Tag },
     { name: "SEO Blogs & Articles", href: "/admin/blogs", icon: FileText },
     { name: "System Settings", href: "/admin/settings", icon: Settings },

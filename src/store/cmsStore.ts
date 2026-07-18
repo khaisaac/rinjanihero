@@ -15,6 +15,7 @@ import {
   BookingOrder,
   PaymentStatus,
   ServiceType,
+  PackageType,
 } from "@/types/cms";
 import {
   initialWebsiteSettings,
@@ -74,6 +75,7 @@ const normalizeETicket = (ticket: any): ETicketOption => ({
 export interface BookingPrefill {
   serviceType: ServiceType;
   packageId?: string;
+  packageType?: PackageType;
   route?: string;
   date?: string;
   adults?: number;

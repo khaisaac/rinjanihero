@@ -2,19 +2,32 @@ export type RouteType = "sembalun" | "senaru" | "torean" | "private" | "custom";
 export type DifficultyLevel = "Moderate" | "Moderate - Hard" | "Hard" | "Extreme";
 export type PaymentStatus = "Pending" | "Deposit Paid" | "Fully Paid" | "Expired" | "Cancelled";
 export type ServiceType = "Trekking" | "Transportation" | "E-Ticket";
+export type PackageType = "Private" | "Standard" | "Meeting Point";
+
+export interface PricingTier {
+  id: string; // e.g. "1", "2-3", "4-5"
+  groupSize: string;
+  minPax: number;
+  maxPax: number;
+  pricePrivate: number;
+  priceStandard: number;
+  priceMeetingPoint: number;
+}
 
 export interface TrekkingPackage {
   id: string;
   slug: string;
   title: string;
   route: RouteType;
+  finishRoute?: RouteType;
   durationDays: number;
   durationNights: number;
   difficulty: DifficultyLevel;
   maxAltitude: string;
   meetingPoint: string;
-  priceUSD: number;
+  priceUSD: number; // Keep as fallback / starting price
   priceIDR: number;
+  pricingMatrix?: PricingTier[];
   depositPercentage: number;
   isPopular?: boolean;
   isFeatured?: boolean;
@@ -151,6 +164,7 @@ export interface BookingOrder {
   createdAt: string;
   serviceType: ServiceType;
   packageId?: string;
+  packageType?: PackageType;
   packageTitle: string;
   trekDate: string;
   participants: {

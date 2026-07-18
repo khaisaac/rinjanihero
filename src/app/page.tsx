@@ -25,7 +25,7 @@ export default function HomePage() {
       <SenaruRouteSection />
       <ToreanRouteSection />
       <TransportationSection />
-      <ETicketSection />
+      {/* <ETicketSection /> */}
       <WhyChooseUs />
       <GallerySection />
       <TestimonialsSection />

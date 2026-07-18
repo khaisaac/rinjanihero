@@ -26,7 +26,7 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
-import { TrekkingPackage } from "@/types/cms";
+import { TrekkingPackage, PackageType, PricingTier } from "@/types/cms";
 
 interface Props {
   pkg: TrekkingPackage;
@@ -40,30 +40,44 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [checkedGear, setCheckedGear] = useState<Record<number, boolean>>({});
   const [participants, setParticipants] = useState<number>(2);
+  const [packageType, setPackageType] = useState<PackageType>("Standard");
   const [trekDate, setTrekDate] = useState<string>(
     new Date(Date.now() + 86400000 * 10).toISOString().split("T")[0]
   );
-  const [privateGuide, setPrivateGuide] = useState<boolean>(false);
 
   const toggleGear = (idx: number) => {
     setCheckedGear((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  const baseTotal = pkg.priceUSD * participants;
-  const privateGuideCost = privateGuide ? 60 : 0;
-  const grandTotal = baseTotal + privateGuideCost;
+  // Find applicable pricing tier
+  const highestTier = pkg.pricingMatrix && pkg.pricingMatrix.length > 0 
+    ? [...pkg.pricingMatrix].sort((a,b) => b.minPax - a.minPax)[0] 
+    : undefined;
+    
+  const activeTier = pkg.pricingMatrix?.find(t => participants >= t.minPax && participants <= t.maxPax) || highestTier;
+
+  // Calculate base price
+  let basePricePerPerson = pkg.priceUSD;
+  if (activeTier) {
+    if (packageType === "Private") basePricePerPerson = activeTier.pricePrivate;
+    else if (packageType === "Standard") basePricePerPerson = activeTier.priceStandard;
+    else if (packageType === "Meeting Point") basePricePerPerson = activeTier.priceMeetingPoint;
+  }
+
+  const grandTotal = basePricePerPerson * participants;
   const depositAmount = Math.round((grandTotal * pkg.depositPercentage) / 100);
 
   const handleProceedBooking = () => {
     setBookingPrefill({
       serviceType: "Trekking",
       packageId: pkg.id,
+      packageType,
       route: pkg.route,
       date: trekDate,
       adults: participants,
       returnUrl: `/packages/${pkg.slug}`,
     });
-    router.push("/booking");
+    router.push(`/booking?packageId=${pkg.id}&packageType=${packageType}`);
   };
 
   return (
@@ -221,15 +235,48 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Content Column (8 spans) */}
           <div className="lg:col-span-8 space-y-10">
-            {/* Overview */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-4">
-              <h3 className="text-2xl font-extrabold text-[#122826] flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#D4A017]" />
-                <span>Expedition Overview</span>
-              </h3>
-              <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
-                {pkg.overview}
-              </p>
+            {/* Overview & Pricing */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-extrabold text-[#122826] flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#D4A017]" />
+                  <span>Expedition Overview</span>
+                </h3>
+                <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
+                  {pkg.overview}
+                </p>
+              </div>
+
+              {pkg.pricingMatrix && pkg.pricingMatrix.length > 0 && (
+                <div className="space-y-4 pt-6 border-t border-gray-100">
+                  <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2">
+                    <Award className="w-5 h-5 text-[#18979B]" />
+                    <span>Package Pricing (USD / Person)</span>
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[500px]">
+                      <thead>
+                        <tr className="bg-gray-50 border-y border-gray-200">
+                          <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Group Size</th>
+                          <th className="px-4 py-3 text-xs font-bold text-[#D4A017] uppercase bg-amber-50/50">Private</th>
+                          <th className="px-4 py-3 text-xs font-bold text-[#18979B] uppercase">Standard</th>
+                          <th className="px-4 py-3 text-xs font-bold text-gray-600 uppercase">Meeting Point</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {pkg.pricingMatrix.map((tier, idx) => (
+                          <tr key={idx} className="hover:bg-gray-50 transition">
+                            <td className="px-4 py-3 text-sm font-bold text-[#122826]">{tier.groupSize}</td>
+                            <td className="px-4 py-3 text-sm font-extrabold text-[#D4A017] bg-amber-50/30">${tier.pricePrivate}</td>
+                            <td className="px-4 py-3 text-sm font-bold text-[#18979B]">${tier.priceStandard}</td>
+                            <td className="px-4 py-3 text-sm font-semibold text-gray-600">${tier.priceMeetingPoint}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Interactive Tabs Navigation */}
@@ -454,16 +501,17 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
             <div className="glass-dark p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 text-white space-y-6">
               <div className="pb-4 border-b border-white/10 flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-[#D4A017] uppercase font-extrabold tracking-wider block">Official Price</span>
+                  <span className="text-xs text-[#D4A017] uppercase font-extrabold tracking-wider block">Total Price ({participants} pax)</span>
                   <div className="flex items-baseline gap-1.5 mt-0.5">
-                    <span className="text-3xl font-black text-white">${pkg.priceUSD}</span>
-                    <span className="text-xs text-gray-300 font-medium">/ person ({pkg.priceIDR.toLocaleString()} IDR)</span>
+                    <span className="text-3xl font-black text-white">${grandTotal}</span>
+                    <span className="text-xs text-gray-300 font-medium">USD</span>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex flex-col gap-1 items-end">
                   <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-400/30">
                     Deposit {pkg.depositPercentage}%
                   </span>
+                  <span className="text-xs text-gray-400">${basePricePerPerson}/person</span>
                 </div>
               </div>
 
@@ -511,42 +559,51 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   </div>
                 </div>
 
-                {/* Optional Add-on: Private Guide */}
-                <div
-                  onClick={() => setPrivateGuide(!privateGuide)}
-                  className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                    privateGuide
-                      ? "bg-[#D4A017]/20 border-[#D4A017] text-white"
-                      : "bg-white/5 border-white/10 text-gray-300 hover:border-white/30"
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    {privateGuide ? (
-                      <CheckSquare className="w-5 h-5 text-[#D4A017] shrink-0" />
-                    ) : (
-                      <Square className="w-5 h-5 text-gray-400 shrink-0" />
-                    )}
-                    <div>
-                      <h5 className="text-xs font-bold text-white">Private VIP Guide & Tent Upgrade</h5>
-                      <p className="text-[10px] text-gray-400">Exclusive dedicated guide just for your group</p>
+                {/* Package Type Selector */}
+                {pkg.pricingMatrix && pkg.pricingMatrix.length > 0 && (
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider">
+                      Select Package Type
+                    </label>
+                    <div className="grid grid-cols-1 gap-2">
+                      {["Private", "Standard", "Meeting Point"].map((ptype) => (
+                        <div
+                          key={ptype}
+                          onClick={() => setPackageType(ptype as PackageType)}
+                          className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
+                            packageType === ptype
+                              ? ptype === "Private" ? "bg-[#D4A017]/20 border-[#D4A017] text-white" : "bg-[#18979B]/20 border-[#18979B] text-white"
+                              : "bg-white/5 border-white/10 text-gray-300 hover:border-white/30"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            {packageType === ptype ? (
+                              <CheckSquare className={`w-5 h-5 shrink-0 ${ptype === "Private" ? "text-[#D4A017]" : "text-[#18979B]"}`} />
+                            ) : (
+                              <Square className="w-5 h-5 text-gray-400 shrink-0" />
+                            )}
+                            <div>
+                              <h5 className={`text-xs font-bold ${packageType === ptype ? 'text-white' : 'text-gray-300'}`}>{ptype} Package</h5>
+                            </div>
+                          </div>
+                          {activeTier && (
+                            <span className={`text-xs font-extrabold ${ptype === "Private" ? "text-[#D4A017]" : "text-white"}`}>
+                              ${ptype === "Private" ? activeTier.pricePrivate : ptype === "Standard" ? activeTier.priceStandard : activeTier.priceMeetingPoint} / pax
+                            </span>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <span className="text-xs font-extrabold text-[#D4A017]">+$60</span>
-                </div>
+                )}
               </div>
 
               {/* Price Breakdown */}
               <div className="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-gray-300">
-                  <span>Base ({participants} × ${pkg.priceUSD}):</span>
-                  <span className="font-bold text-white">${baseTotal}</span>
+                  <span>Base ({participants} × ${basePricePerPerson}):</span>
+                  <span className="font-bold text-white">${grandTotal}</span>
                 </div>
-                {privateGuide && (
-                  <div className="flex items-center justify-between text-[#D4A017]">
-                    <span>VIP Guide Upgrade:</span>
-                    <span className="font-bold">+$60</span>
-                  </div>
-                )}
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-sm font-extrabold text-white">
                   <span>Grand Total:</span>
                   <span className="text-[#D4A017]">${grandTotal} USD</span>

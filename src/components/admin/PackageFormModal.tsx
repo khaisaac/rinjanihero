@@ -323,16 +323,33 @@ export default function PackageFormModal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-1">
-                    Primary Route *
+                    Primary Route (Start Gate) *
                   </label>
                   <select
                     value={formData.route}
                     onChange={(e) => setFormData({ ...formData, route: e.target.value as RouteType })}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-300 font-bold text-xs text-[#122826] focus:outline-none focus:border-[#18979B]"
                   >
+                    <option value="sembalun">Sembalun Route (Summit Specialist)</option>
+                    <option value="senaru">Senaru Route (Crater Rim & Sunset)</option>
+                    <option value="torean">Torean Route (Lake & Waterfalls)</option>
+                    <option value="private">Private VIP Expedition</option>
+                    <option value="custom">Custom Trekking Circuit</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-1">
+                    Finish Route (Exit Gate)
+                  </label>
+                  <select
+                    value={formData.finishRoute || ""}
+                    onChange={(e) => setFormData({ ...formData, finishRoute: e.target.value as RouteType || undefined })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 font-bold text-xs text-[#122826] focus:outline-none focus:border-[#18979B]"
+                  >
+                    <option value="">Same as Start Gate</option>
                     <option value="sembalun">Sembalun Route (Summit Specialist)</option>
                     <option value="senaru">Senaru Route (Crater Rim & Sunset)</option>
                     <option value="torean">Torean Route (Lake & Waterfalls)</option>
@@ -386,7 +403,7 @@ export default function PackageFormModal({
                 </div>
                 <div>
                   <label className="block text-xs font-extrabold text-gray-700 uppercase tracking-wider mb-1">
-                    Price per Person (USD) *
+                    Starting Price (USD) *
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-gray-400">$</span>
@@ -416,6 +433,146 @@ export default function PackageFormModal({
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-gray-400">%</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Pricing Matrix Section */}
+              <div className="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-extrabold text-sm text-[#122826]">Advanced Pricing Matrix</h4>
+                    <p className="text-xs text-gray-500">Set prices based on group size and package type. Used in checkout.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextId = String((formData.pricingMatrix?.length || 0) + 1);
+                      setFormData({
+                        ...formData,
+                        pricingMatrix: [
+                          ...(formData.pricingMatrix || []),
+                          { id: nextId, groupSize: "1 person", minPax: 1, maxPax: 1, pricePrivate: 320, priceStandard: 195, priceMeetingPoint: 140 },
+                        ],
+                      });
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-[#18979B] hover:bg-[#13797C] text-white font-extrabold text-xs shadow flex items-center gap-1.5 transition"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Tier
+                  </button>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                      <tr className="bg-gray-50 border-y border-gray-200">
+                        <th className="px-3 py-2 text-[10px] font-bold text-gray-500 uppercase">Group Size Label</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-gray-500 uppercase">Min-Max Pax</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-[#D4A017] uppercase">Private ($)</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-[#18979B] uppercase">Standard ($)</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-gray-600 uppercase">Meeting Point ($)</th>
+                        <th className="px-3 py-2 text-[10px] font-bold text-gray-500 uppercase">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {(formData.pricingMatrix || []).map((tier, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="px-2 py-2">
+                            <input
+                              type="text"
+                              value={tier.groupSize}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, groupSize: e.target.value };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-full px-2 py-1 rounded-lg border border-gray-300 text-xs font-bold"
+                            />
+                          </td>
+                          <td className="px-2 py-2 flex items-center gap-1">
+                            <input
+                              type="number"
+                              min={1}
+                              value={tier.minPax}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, minPax: Number(e.target.value) };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-12 px-1 py-1 rounded-lg border border-gray-300 text-xs text-center"
+                            />
+                            <span className="text-gray-400 text-xs">-</span>
+                            <input
+                              type="number"
+                              min={1}
+                              value={tier.maxPax}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, maxPax: Number(e.target.value) };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-12 px-1 py-1 rounded-lg border border-gray-300 text-xs text-center"
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="number"
+                              value={tier.pricePrivate}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, pricePrivate: Number(e.target.value) };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-full px-2 py-1 rounded-lg border border-gray-300 text-xs font-bold text-[#D4A017]"
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="number"
+                              value={tier.priceStandard}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, priceStandard: Number(e.target.value) };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-full px-2 py-1 rounded-lg border border-gray-300 text-xs font-bold text-[#18979B]"
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="number"
+                              value={tier.priceMeetingPoint}
+                              onChange={(e) => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix[idx] = { ...tier, priceMeetingPoint: Number(e.target.value) };
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="w-full px-2 py-1 rounded-lg border border-gray-300 text-xs font-bold text-gray-700"
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newMatrix = [...(formData.pricingMatrix || [])];
+                                newMatrix.splice(idx, 1);
+                                setFormData({ ...formData, pricingMatrix: newMatrix });
+                              }}
+                              className="p-1 rounded text-red-500 hover:bg-red-50 transition"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {(formData.pricingMatrix || []).length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="px-4 py-4 text-center text-xs text-gray-500">
+                            No pricing tiers added. It will fallback to Starting Price (USD).
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 

@@ -41,6 +41,7 @@ export const trekkingPackages = mysqlTable("trekking_packages", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: varchar("title", { length: 255 }).notNull(),
   route: varchar("route", { length: 100 }).notNull(),
+  finishRoute: varchar("finish_route", { length: 100 }),
   durationDays: int("duration_days").notNull(),
   durationNights: int("duration_nights").notNull(),
   difficulty: varchar("difficulty", { length: 100 }).notNull(),
@@ -58,6 +59,7 @@ export const trekkingPackages = mysqlTable("trekking_packages", {
   includes: json("includes").notNull(), // string[]
   excludes: json("excludes").notNull(), // string[]
   thingsToBring: json("things_to_bring").notNull(), // string[]
+  pricingMatrix: json("pricing_matrix"), // object[]
   itinerary: json("itinerary").notNull(), // object[]
   faq: json("faq").notNull(), // object[]
   relatedPackageIds: json("related_package_ids"), // string[]
@@ -170,6 +172,7 @@ export const bookingOrders = mysqlTable("booking_orders", {
   createdAt: varchar("created_at", { length: 100 }).notNull(),
   serviceType: varchar("service_type", { length: 100 }).notNull(),
   packageId: varchar("package_id", { length: 100 }),
+  packageType: varchar("package_type", { length: 100 }),
   packageTitle: varchar("package_title", { length: 255 }).notNull(),
   trekDate: varchar("trek_date", { length: 100 }).notNull(),
   participants: json("participants").notNull(), // object

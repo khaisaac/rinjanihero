@@ -35,7 +35,7 @@ export default function PopularPackages() {
       adults: 2,
       returnUrl: `/#packages`,
     });
-    router.push("/booking");
+    router.push(`/booking?packageId=${pkg.id}`);
   };
 
   return (

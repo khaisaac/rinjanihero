@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useCMSStore } from "@/store/cmsStore";
-import { ServiceType, Voucher } from "@/types/cms";
+import { ServiceType, Voucher, PackageType } from "@/types/cms";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -30,6 +30,7 @@ export default function BookingPage() {
   const [selectedPackageId, setSelectedPackageId] = useState<string>(
     bookingPrefill?.packageId || packages[0]?.id || ""
   );
+  const [packageType, setPackageType] = useState<PackageType>(bookingPrefill?.packageType || "Standard");
   const [selectedTransportId, setSelectedTransportId] = useState<string>(transportation[0]?.id || "");
   const [selectedETicketId, setSelectedETicketId] = useState<string>(eTickets[0]?.id || "");
 
@@ -39,7 +40,6 @@ export default function BookingPage() {
   const [adults, setAdults] = useState<number>(bookingPrefill?.adults || 2);
   const [children, setChildren] = useState<number>(0);
   const [extraPorters, setExtraPorters] = useState<number>(0);
-  const [privateGuide, setPrivateGuide] = useState<boolean>(false);
 
   // Customer details
   const [fullName, setFullName] = useState("");
@@ -62,11 +62,27 @@ export default function BookingPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (bookingPrefill) {
-      if (bookingPrefill.serviceType) setServiceType(bookingPrefill.serviceType);
-      if (bookingPrefill.packageId) setSelectedPackageId(bookingPrefill.packageId);
-      if (bookingPrefill.date) setTrekDate(bookingPrefill.date);
-      if (bookingPrefill.adults) setAdults(bookingPrefill.adults);
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlPackageId = urlParams.get("packageId");
+      const urlPackageType = urlParams.get("packageType") as PackageType;
+      const urlServiceType = urlParams.get("serviceType");
+      const urlTransportId = urlParams.get("transportId");
+      
+      if (urlPackageId) {
+        setServiceType("Trekking");
+        setSelectedPackageId(urlPackageId);
+        if (urlPackageType) setPackageType(urlPackageType);
+      } else if (urlServiceType === "Transportation" && urlTransportId) {
+        setServiceType("Transportation");
+        setSelectedTransportId(urlTransportId);
+      } else if (bookingPrefill) {
+        if (bookingPrefill.serviceType) setServiceType(bookingPrefill.serviceType);
+        if (bookingPrefill.packageId) setSelectedPackageId(bookingPrefill.packageId);
+        if (bookingPrefill.packageType) setPackageType(bookingPrefill.packageType);
+        if (bookingPrefill.date) setTrekDate(bookingPrefill.date);
+        if (bookingPrefill.adults) setAdults(bookingPrefill.adults);
+      }
     }
   }, [bookingPrefill]);
 
@@ -80,10 +96,21 @@ export default function BookingPage() {
   let extrasTotal = 0;
 
   if (serviceType === "Trekking" && selectedPkg) {
-    basePricePerPerson = selectedPkg.priceUSD;
-    subtotal = selectedPkg.priceUSD * (adults + children * 0.8);
+    const highestTier = selectedPkg.pricingMatrix && selectedPkg.pricingMatrix.length > 0 
+      ? [...selectedPkg.pricingMatrix].sort((a,b) => b.minPax - a.minPax)[0] 
+      : undefined;
+    const activeTier = selectedPkg.pricingMatrix?.find(t => adults >= t.minPax && adults <= t.maxPax) || highestTier;
+
+    if (activeTier) {
+      if (packageType === "Private") basePricePerPerson = activeTier.pricePrivate;
+      else if (packageType === "Standard") basePricePerPerson = activeTier.priceStandard;
+      else if (packageType === "Meeting Point") basePricePerPerson = activeTier.priceMeetingPoint;
+    } else {
+      basePricePerPerson = selectedPkg.priceUSD;
+    }
+
+    subtotal = basePricePerPerson * (adults + children * 0.8);
     if (extraPorters > 0) extrasTotal += extraPorters * 45;
-    if (privateGuide) extrasTotal += 60;
   } else if (serviceType === "Transportation" && selectedTrans) {
     basePricePerPerson = selectedTrans.priceUSD;
     subtotal = selectedTrans.priceUSD; // per vehicle
@@ -154,6 +181,7 @@ export default function BookingPage() {
       createdAt: new Date().toISOString(),
       serviceType,
       packageId: serviceType === "Trekking" ? selectedPkg?.id : undefined,
+      packageType: serviceType === "Trekking" ? packageType : undefined,
       packageTitle:
         serviceType === "Trekking"
           ? selectedPkg?.title || "Trekking Package"
@@ -165,7 +193,7 @@ export default function BookingPage() {
         adults,
         children,
         extraPorters,
-        privateGuide,
+        privateGuide: packageType === "Private",
       },
       customer: {
         fullName,
@@ -212,11 +240,11 @@ export default function BookingPage() {
         </div>
 
         {/* Service Type Selector Pills */}
-        <div className="bg-white rounded-3xl p-3 shadow-md border border-gray-200 mb-8 max-w-3xl mx-auto grid grid-cols-3 gap-2">
+        <div className="bg-white rounded-3xl p-3 shadow-md border border-gray-200 mb-8 max-w-2xl mx-auto grid grid-cols-2 gap-2">
           {[
             { id: "Trekking", label: "🗻 Trekking Package" },
             { id: "Transportation", label: "🚐 Lombok Transfer" },
-            { id: "E-Ticket", label: "🎟️ E-Rinjani Ticket" },
+            // { id: "E-Ticket", label: "🎟️ E-Rinjani Ticket" },
           ].map((srv) => (
             <button
               key={srv.id}
@@ -419,26 +447,6 @@ export default function BookingPage() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="sm:col-span-2 pt-2">
-                    <div
-                      onClick={() => setPrivateGuide(!privateGuide)}
-                      className={`p-4 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                        privateGuide
-                          ? "bg-amber-50 border-[#D4A017] text-[#122826]"
-                          : "bg-[#F8FAF9] border-gray-200 text-gray-700 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={privateGuide} readOnly className="w-4 h-4 text-[#D4A017]" />
-                        <div>
-                          <h5 className="text-sm font-bold text-[#122826]">Upgrade to Private VIP Guide & Tent ($60 flat)</h5>
-                          <p className="text-xs text-gray-500">100% private group with dedicated lead guide & priority campsite placement</p>
-                        </div>
-                      </div>
-                      <span className="font-extrabold text-[#D4A017] text-sm">+$60</span>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -561,6 +569,11 @@ export default function BookingPage() {
                     ? selectedTrans?.destination
                     : selectedTicket?.title}
                 </h3>
+                {serviceType === "Trekking" && (
+                  <p className="text-xs font-bold text-[#D4A017] mt-1 uppercase tracking-wider">
+                    {packageType} Package
+                  </p>
+                )}
                 <p className="text-xs text-gray-300 mt-1 flex items-center gap-1.5">
                   <CalendarCheck className="w-3.5 h-3.5 text-[#18979B]" />
                   <span>Date: {trekDate}</span>
@@ -585,13 +598,6 @@ export default function BookingPage() {
                   <div className="flex items-center justify-between text-gray-300">
                     <span>Extra Porters ({extraPorters}):</span>
                     <span className="font-bold text-white">${extraPorters * 45}</span>
-                  </div>
-                )}
-
-                {privateGuide && (
-                  <div className="flex items-center justify-between text-[#D4A017]">
-                    <span>VIP Private Guide Upgrade:</span>
-                    <span className="font-bold">+$60</span>
                   </div>
                 )}
 

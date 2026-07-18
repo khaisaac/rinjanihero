@@ -16,7 +16,7 @@ export default function TransportationSection() {
       adults: 2,
       returnUrl: "/#transportation",
     });
-    router.push("/booking");
+    router.push(`/booking?serviceType=Transportation&transportId=${item.id}`);
   };
 
   return (
