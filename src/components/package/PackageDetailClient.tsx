@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { parseArray } from "@/utils/jsonParser";
+import { parseArray, parseJson } from "@/utils/jsonParser";
 import {
   Compass,
   Clock,
@@ -37,7 +37,7 @@ interface Props {
 export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
   const router = useRouter();
   const { setBookingPrefill } = useCMSStore();
-  const [activeTab, setActiveTab] = useState<"itinerary" | "includes" | "gear" | "faq">("itinerary");
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [checkedGear, setCheckedGear] = useState<Record<number, boolean>>({});
   const [participants, setParticipants] = useState<number>(1);
@@ -50,12 +50,16 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
     setCheckedGear((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
+  // Parse JSON data that might come as strings from DB
+  const pricingMatrix = parseArray<PricingTier>(pkg.pricingMatrix);
+  const parsedPackageTypes = parseJson<any>(pkg.packageTypes, {});
+
   // Find applicable pricing tier
-  const highestTier = pkg.pricingMatrix && pkg.pricingMatrix.length > 0 
-    ? [...pkg.pricingMatrix].sort((a,b) => b.minPax - a.minPax)[0] 
+  const highestTier = pricingMatrix && pricingMatrix.length > 0 
+    ? [...pricingMatrix].sort((a,b) => b.minPax - a.minPax)[0] 
     : undefined;
     
-  const activeTier = pkg.pricingMatrix?.find(t => participants >= t.minPax && participants <= t.maxPax) || highestTier;
+  const activeTier = pricingMatrix?.find(t => participants >= t.minPax && participants <= t.maxPax) || highestTier;
 
   // Calculate base price
   let basePricePerPerson = pkg.priceUSD;
@@ -248,7 +252,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 </p>
               </div>
 
-              {pkg.pricingMatrix && pkg.pricingMatrix.length > 0 && (
+              {pricingMatrix && pricingMatrix.length > 0 && (
                 <div className="space-y-4 pt-6 border-t border-gray-100">
                   <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2">
                     <Award className="w-5 h-5 text-[#18979B]" />
@@ -265,7 +269,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {pkg.pricingMatrix.map((tier, idx) => (
+                        {pricingMatrix.map((tier, idx) => (
                           <tr key={idx} className="hover:bg-gray-50 transition">
                             <td className="px-4 py-3 text-sm font-bold text-[#122826]">{tier.groupSize}</td>
                             <td className="px-4 py-3 text-sm font-extrabold text-[#D4A017] bg-amber-50/30">${tier.pricePrivate}</td>
@@ -283,31 +287,9 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
 
             </div>
 
-            {/* Interactive Tabs Navigation */}
-            <div className="bg-white rounded-3xl p-2 shadow-sm border border-gray-200 flex flex-wrap gap-2">
-              {[
-                { id: "itinerary", label: "🗓️ Day-by-Day Itinerary" },
-                { id: "includes", label: "✅ Includes / Excludes" },
-                { id: "gear", label: "🎒 Things To Bring Checklist" },
-                { id: "faq", label: "❓ Trekking FAQ" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex-1 py-3 px-4 rounded-2xl font-bold text-xs sm:text-sm transition ${
-                    activeTab === tab.id
-                      ? "bg-[#18979B] text-white shadow-md"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab 1: Itinerary */}
-            {activeTab === "itinerary" && (
-              <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Itinerary Section */}
+            <div className="space-y-6 pt-10 border-t border-gray-100">
+              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">🗓️ Day-by-Day Itinerary</h3>
                 {parseArray(pkg.itinerary).map((day: any) => (
                   <div key={day.day} className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 relative overflow-hidden">
                     <div className="absolute top-0 left-0 bottom-0 w-3 bg-[#18979B]" />
@@ -344,11 +326,10 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   </div>
                 ))}
               </div>
-            )}
 
-            {/* Tab 2: Includes / Excludes */}
-            {activeTab === "includes" && (
-              <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Includes / Excludes Section */}
+            <div className="space-y-6 pt-10 border-t border-gray-100">
+              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">✅ Includes & Excludes</h3>
                 {/* Package Type Switcher */}
                 <div className="flex p-1.5 bg-gray-100 rounded-2xl w-full max-w-lg mx-auto">
                   {(["Standard", "Private", "Meeting Point"] as const).map((type) => (
@@ -370,7 +351,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 <div 
                   className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 text-gray-600 prose prose-sm max-w-none prose-p:leading-relaxed"
                   dangerouslySetInnerHTML={{ 
-                    __html: pkg.packageTypes?.[
+                    __html: parsedPackageTypes?.[
                       packageType === "Standard" ? "standard" : 
                       packageType === "Private" ? "private" : "meetingPoint"
                     ]?.description || "" 
@@ -384,7 +365,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                       <span>What is Included ({packageType})</span>
                     </h4>
                     <ul className="space-y-3">
-                      {(pkg.packageTypes?.[
+                      {(parsedPackageTypes?.[
                         packageType === "Standard" ? "standard" : 
                         packageType === "Private" ? "private" : "meetingPoint"
                       ]?.includes || []).map((inc: string, i: number) => (
@@ -402,7 +383,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                       <span>What is Excluded ({packageType})</span>
                     </h4>
                     <ul className="space-y-3">
-                      {(pkg.packageTypes?.[
+                      {(parsedPackageTypes?.[
                         packageType === "Standard" ? "standard" : 
                         packageType === "Private" ? "private" : "meetingPoint"
                       ]?.excludes || []).map((exc: string, i: number) => (
@@ -415,11 +396,9 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   </div>
                 </div>
               </div>
-            )}
 
-            {/* Tab 3: Things To Bring Checklist */}
-            {activeTab === "gear" && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6 animate-in fade-in duration-200">
+            {/* Things To Bring Checklist Section */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6 mt-10">
                 <div>
                   <h4 className="text-xl font-bold text-[#122826] flex items-center gap-2">
                     <CheckSquare className="w-5 h-5 text-[#18979B]" />
@@ -456,11 +435,10 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   })}
                 </div>
               </div>
-            )}
 
-            {/* Tab 4: FAQ */}
-            {activeTab === "faq" && (
-              <div className="space-y-4 animate-in fade-in duration-200">
+            {/* FAQ Section */}
+            <div className="space-y-4 pt-10 border-t border-gray-100">
+              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">❓ Trekking FAQ</h3>
                 {parseArray(pkg.faq).map((f: any, i: number) => (
                   <div key={i} className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 space-y-2">
                     <h5 className="text-base font-bold text-[#122826] flex items-center gap-2">
@@ -473,8 +451,6 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   </div>
                 ))}
               </div>
-            )}
-
             {/* Related Packages Carousel/Cards */}
             {relatedPackages.length > 0 && (
               <div className="pt-8 border-t border-gray-200">
@@ -571,9 +547,8 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider flex items-center justify-between">
-                    <span>Number of Trekkers</span>
-                    <span className="text-[#D4A017] lowercase font-normal">Discount for 4+</span>
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
+                    Number of Trekkers
                   </label>
                   <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
                     <div className="flex items-center gap-2.5 text-sm font-semibold">
@@ -600,7 +575,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 </div>
 
                 {/* Package Type Selector */}
-                {pkg.pricingMatrix && pkg.pricingMatrix.length > 0 && (
+                {pricingMatrix && pricingMatrix.length > 0 && (
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
                       Select Package Type

@@ -1,22 +1,36 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { initialTrekkingPackages } from "@/data/mockData";
 import { parseArray } from "@/utils/jsonParser";
 import PackageDetailClient from "@/components/package/PackageDetailClient";
+import { db } from "@/db";
+import { trekkingPackages } from "@/db/schema";
+import { eq, or, not } from "drizzle-orm";
+
+const normalizePackage = (pkg: any) => ({
+  ...pkg,
+  galleryImages: parseArray(pkg.galleryImages),
+  packageTypes: typeof pkg.packageTypes === 'string' ? JSON.parse(pkg.packageTypes) : pkg.packageTypes,
+  thingsToBring: parseArray(pkg.thingsToBring),
+  itinerary: parseArray(pkg.itinerary),
+  faq: parseArray(pkg.faq),
+  relatedPackageIds: parseArray(pkg.relatedPackageIds),
+});
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
-  return initialTrekkingPackages.map((pkg) => ({
+  const packages = await db.select({ slug: trekkingPackages.slug }).from(trekkingPackages);
+  return packages.map((pkg) => ({
     id: pkg.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const pkg = initialTrekkingPackages.find((p) => p.slug === id || p.id === id);
+  const rawPkg = await db.select().from(trekkingPackages).where(or(eq(trekkingPackages.slug, id), eq(trekkingPackages.id, id))).limit(1);
+  const pkg = rawPkg[0] ? normalizePackage(rawPkg[0]) : null;
 
   if (!pkg) {
     return {
@@ -37,13 +51,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PackageDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const pkg = initialTrekkingPackages.find((p) => p.slug === id || p.id === id);
+  const rawPkg = await db.select().from(trekkingPackages).where(or(eq(trekkingPackages.slug, id), eq(trekkingPackages.id, id))).limit(1);
+  const pkg = rawPkg[0] ? normalizePackage(rawPkg[0]) : null;
 
   if (!pkg) {
     notFound();
   }
 
-  const relatedPackages = initialTrekkingPackages.filter((p) => p.id !== pkg.id).slice(0, 2);
+  const rawRelatedPackages = await db.select().from(trekkingPackages).where(not(eq(trekkingPackages.id, pkg.id))).limit(2);
+  const relatedPackages = rawRelatedPackages.map(normalizePackage);
 
   const touristTripSchema = {
     "@context": "https://schema.org",

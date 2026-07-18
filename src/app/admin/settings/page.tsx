@@ -16,9 +16,7 @@ export default function AdminSettingsPage() {
   const [phone, setPhone] = useState(settings.contactPhone);
   const [email, setEmail] = useState(settings.contactEmail);
   const [address, setAddress] = useState(settings.officeAddress || settings.address);
-  const [packageStandardDesc, setPackageStandardDesc] = useState(settings.packageStandardDesc || "");
-  const [packagePrivateDesc, setPackagePrivateDesc] = useState(settings.packagePrivateDesc || "");
-  const [packageMeetingPointDesc, setPackageMeetingPointDesc] = useState(settings.packageMeetingPointDesc || "");
+
   const [savedMsg, setSavedMsg] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
@@ -31,16 +29,13 @@ export default function AdminSettingsPage() {
       contactEmail: email,
       address,
       officeAddress: address,
-      packageStandardDesc,
-      packagePrivateDesc,
-      packageMeetingPointDesc,
     });
     setSavedMsg(true);
     setTimeout(() => setSavedMsg(false), 3000);
   };
 
   return (
-    <AdminLayout title="System & Basecamp Settings" subtitle="Configure hotline numbers, basecamp office location, and package explanations">
+    <AdminLayout title="System & Basecamp Settings" subtitle="Configure hotline numbers and basecamp office location">
       <div className="max-w-3xl space-y-6">
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100">
@@ -107,45 +102,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
 
-              <div className="sm:col-span-2 pt-4 border-t border-gray-100">
-                <h4 className="text-sm font-bold text-[#122826] mb-4">Package Type Explanations</h4>
-              </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Standard Package Description</label>
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
-                  <ReactQuill 
-                    theme="snow"
-                    value={packageStandardDesc}
-                    onChange={setPackageStandardDesc}
-                    className="h-32 mb-10"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Private Package Description</label>
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
-                  <ReactQuill 
-                    theme="snow"
-                    value={packagePrivateDesc}
-                    onChange={setPackagePrivateDesc}
-                    className="h-32 mb-10"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Meeting Point Package Description</label>
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
-                  <ReactQuill 
-                    theme="snow"
-                    value={packageMeetingPointDesc}
-                    onChange={setPackageMeetingPointDesc}
-                    className="h-32 mb-10"
-                  />
-                </div>
-              </div>
             </div>
 
             <div className="pt-4 border-t border-gray-100 flex justify-end">
