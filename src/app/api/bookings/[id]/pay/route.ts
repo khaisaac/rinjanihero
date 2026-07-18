@@ -49,10 +49,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       const requestTimestamp = new Date().toISOString().slice(0, 19) + "Z";
       const requestTarget = "/checkout/v1/payment";
 
+      const origin = request.headers.get("origin") || "https://rinjanihero.com";
+
       const dokuPayload = {
         order: {
           invoice_number: booking.orderNumber,
           amount: amountPaidIDR,
+          callback_url: `${origin}/booking/payment/${booking.id}`,
         },
         payment: {
           payment_due_date: 60, // 60 mins expiry
