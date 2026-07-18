@@ -90,19 +90,19 @@ export default async function PackageDetailPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://rinjanihero.com",
+        item: "https://rinjanihero.org",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Packages",
-        item: "https://rinjanihero.com/#packages",
+        item: "https://rinjanihero.org/#packages",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: pkg.title,
-        item: `https://rinjanihero.com/packages/${pkg.slug}`,
+        item: `https://rinjanihero.org/packages/${pkg.slug}`,
       },
     ],
   };

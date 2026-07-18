@@ -15,6 +15,7 @@ const jakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://rinjanihero.org"),
   title: {
     default: "Rinjani Hero | #1 Mount Rinjani Trekking Specialist & Tour Guide",
     template: "%s | Rinjani Hero Trekking Specialist",
@@ -23,21 +24,27 @@ export const metadata: Metadata = {
     "Explore Mount Rinjani with Lombok's #1 official local trekking operator since 2013. We provide unforgettable Sembalun, Senaru, and Torean trekking routes with professional guides, safety-first standards, and best price guarantee.",
   keywords: [
     "Mount Rinjani Trekking",
+    "Trek Mount Rinjani",
+    "Climb Mount Rinjani",
     "Rinjani Trekking Package",
+    "Mount Rinjani Tour Packages",
+    "Mount Rinjani Guide",
+    "Rinjani Volcano Trekking",
     "Sembalun Route",
     "Senaru Route",
     "Torean Route",
-    "Segara Anak Lake",
+    "Segara Anak Lake Trekking",
     "Rinjani Summit Trek",
+    "Best Rinjani Trekking Company",
     "Lombok Tour Operator",
-    "E-Rinjani Ticket",
+    "Mount Rinjani Hike",
     "Rinjani Hero",
   ],
-  authors: [{ name: "Rinjani Hero Team", url: "https://rinjanihero.com" }],
+  authors: [{ name: "Rinjani Hero Team", url: "https://rinjanihero.org" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://rinjanihero.com",
+    url: "https://rinjanihero.org",
     title: "Rinjani Hero | Mount Rinjani Trekking & Tour Specialist",
     description:
       "Experience the beauty of Mount Rinjani with experienced local guides. Sembalun, Senaru, & Torean routes. Safe, reliable, and best price guaranteed.",
@@ -65,6 +72,19 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "google-site-verification=6IfJeP3N3acg2U5V-mU_20mapd6issRTuM15mCxO-Ts", // TODO: Replace with actual code
+  },
+  alternates: {
+    canonical: "https://rinjanihero.org",
   },
 };
 
@@ -89,7 +109,7 @@ export default function RootLayout({
     },
     telephone: "+6285338938083",
     email: "rinjanihero@gmail.com",
-    url: "https://rinjanihero.com",
+    url: "https://rinjanihero.org",
     priceRange: "$$-$$$",
     aggregateRating: {
       "@type": "AggregateRating",
