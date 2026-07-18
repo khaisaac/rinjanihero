@@ -51,6 +51,7 @@ const normalizePackage = (pkg: any): TrekkingPackage => ({
   thingsToBring: parseArray(pkg?.thingsToBring),
   itinerary: parseArray(pkg?.itinerary),
   faq: parseArray(pkg?.faq),
+  pricingMatrix: typeof pkg?.pricingMatrix === 'string' ? parseJson(pkg.pricingMatrix) : parseArray(pkg?.pricingMatrix),
   relatedPackageIds: parseArray(pkg?.relatedPackageIds),
 });
 
