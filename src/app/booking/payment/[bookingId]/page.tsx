@@ -66,7 +66,7 @@ export default function PaymentPage() {
 
   const amountToPayUSD =
     paymentOption === "deposit" ? booking.pricing.depositRequiredUSD : booking.pricing.totalUSD;
-  const amountToPayIDR = Math.round(amountToPayUSD * 15500);
+  const amountToPayIDR = Math.round(amountToPayUSD * 18000);
 
   const handleSimulatePayment = async () => {
     setIsProcessing(true);

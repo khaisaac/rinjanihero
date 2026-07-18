@@ -121,7 +121,7 @@ export default function BookingPage() {
 
   const subtotalBeforeVoucher = subtotal + extrasTotal;
   const finalTotalUSD = Math.max(0, Math.round((subtotalBeforeVoucher - voucherDiscountUSD) * 100) / 100);
-  const finalTotalIDR = Math.round(finalTotalUSD * 15500);
+  const finalTotalIDR = Math.round(finalTotalUSD * 18000);
 
   const depositRequiredUSD =
     serviceType === "Trekking" && selectedPkg
@@ -666,7 +666,7 @@ export default function BookingPage() {
                 {remainingBalanceUSD > 0 && (
                   <div className="flex items-center justify-between text-gray-300 text-[11px] pt-1 px-1">
                     <span>Remaining Due Upon Arrival:</span>
-                    <span className="font-bold text-white">${remainingBalanceUSD} USD ({Math.round(remainingBalanceUSD * 15500).toLocaleString()} IDR)</span>
+                    <span className="font-bold text-white">${remainingBalanceUSD} USD ({Math.round(remainingBalanceUSD * 18000).toLocaleString()} IDR)</span>
                   </div>
                 )}
               </div>

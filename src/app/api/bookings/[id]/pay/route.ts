@@ -18,8 +18,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const newPaymentStatus = paymentOption === "deposit" ? "Deposit Paid" : "Fully Paid";
-    const amountPaidUSD = paymentOption === "deposit" ? (booking.pricing as any).depositRequiredUSD : (booking.pricing as any).totalUSD;
-    const amountPaidIDR = Math.round(amountPaidUSD * 15500);
+    const pricing = typeof booking.pricing === "string" ? JSON.parse(booking.pricing as string) : booking.pricing;
+    const customer = typeof booking.customer === "string" ? JSON.parse(booking.customer as string) : booking.customer;
+
+    const amountPaidUSD = paymentOption === "deposit" ? pricing.depositRequiredUSD : pricing.totalUSD;
+    const amountPaidIDR = Math.round(amountPaidUSD * 18000);
 
     // 2. Try to fetch package details from DB to get full includes/excludes checklist
     let packageData = null;
@@ -55,9 +58,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           payment_due_date: 60, // 60 mins expiry
         },
         customer: {
-          name: (booking.customer as any).fullName || "Rinjani Hero Guest",
-          email: (booking.customer as any).email || "guest@rinjanihero.com",
-          phone: (booking.customer as any).phone || "+6285338938083",
+          name: customer.fullName || "Rinjani Hero Guest",
+          email: customer.email || "guest@rinjanihero.com",
+          phone: customer.phone || "+6285338938083",
         },
       };
 

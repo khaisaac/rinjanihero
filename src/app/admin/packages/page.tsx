@@ -30,7 +30,7 @@ export default function AdminPackagesPage() {
   const handleSaveQuickEdit = (id: string) => {
     updatePackage(id, {
       priceUSD,
-      priceIDR: priceUSD * 15500,
+      priceIDR: priceUSD * 18000,
       depositPercentage,
       isPopular,
     });

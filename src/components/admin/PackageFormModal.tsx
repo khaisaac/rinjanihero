@@ -163,7 +163,7 @@ export default function PackageFormModal({
     setFormData((prev) => ({
       ...prev,
       priceUSD: usd,
-      priceIDR: usd * 15500,
+      priceIDR: usd * 18000,
     }));
   };
 
