@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { Settings, PhoneCall, Mail, MapPin, Check, ShieldCheck, Database, Save } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import { useCMSStore } from "@/store/cmsStore";
 
 export default function AdminSettingsPage() {
@@ -109,32 +113,38 @@ export default function AdminSettingsPage() {
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Standard Package Description</label>
-                <textarea
-                  value={packageStandardDesc}
-                  onChange={(e) => setPackageStandardDesc(e.target.value)}
-                  rows={3}
-                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
-                />
+                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
+                  <ReactQuill 
+                    theme="snow"
+                    value={packageStandardDesc}
+                    onChange={setPackageStandardDesc}
+                    className="h-32 mb-10"
+                  />
+                </div>
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Private Package Description</label>
-                <textarea
-                  value={packagePrivateDesc}
-                  onChange={(e) => setPackagePrivateDesc(e.target.value)}
-                  rows={3}
-                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
-                />
+                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
+                  <ReactQuill 
+                    theme="snow"
+                    value={packagePrivateDesc}
+                    onChange={setPackagePrivateDesc}
+                    className="h-32 mb-10"
+                  />
+                </div>
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Meeting Point Package Description</label>
-                <textarea
-                  value={packageMeetingPointDesc}
-                  onChange={(e) => setPackageMeetingPointDesc(e.target.value)}
-                  rows={3}
-                  className="w-full bg-[#F8FAF9] border border-gray-300 rounded-2xl px-4 py-3 text-sm text-[#122826] focus:outline-none focus:border-[#18979B] resize-none"
-                />
+                <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#18979B]">
+                  <ReactQuill 
+                    theme="snow"
+                    value={packageMeetingPointDesc}
+                    onChange={setPackageMeetingPointDesc}
+                    className="h-32 mb-10"
+                  />
+                </div>
               </div>
             </div>
 
