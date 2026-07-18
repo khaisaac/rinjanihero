@@ -80,11 +80,17 @@ export default function PaymentPage() {
         body: JSON.stringify({
           paymentOption,
           paymentMethod,
-          simulate: true,
+          simulate: false,
         }),
       });
 
       const data = await res.json();
+      if (!data.success) {
+        alert("Payment Error: " + data.error);
+        setIsProcessing(false);
+        return;
+      }
+
       if (data?.isLiveRedirect && data?.checkoutUrl) {
         window.location.href = data.checkoutUrl;
         return;

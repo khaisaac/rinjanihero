@@ -35,10 +35,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // 3. Check DOKU Production Gateway Live Integration
     const dokuClientId = process.env.DOKU_CLIENT_ID;
     const dokuSecretKey = process.env.DOKU_SECRET_KEY;
-    const isProduction = process.env.DOKU_IS_PRODUCTION === "true" || true; // Default production mode requested by client
+    const isProduction = process.env.DOKU_IS_PRODUCTION === "true" || true;
 
-    // If live checkout URL is requested (non-simulation mode with API keys present)
-    if (!simulate && dokuClientId && dokuSecretKey) {
+    if (!simulate) {
+      if (!dokuClientId || !dokuSecretKey) {
+        return NextResponse.json({ success: false, error: "DOKU API Keys (DOKU_CLIENT_ID & DOKU_SECRET_KEY) are not configured in your .env file." }, { status: 400 });
+      }
+
       const requestId = `REQ-${booking.orderNumber}-${Date.now()}`;
       const requestTimestamp = new Date().toISOString().slice(0, 19) + "Z";
       const requestTarget = "/checkout/v1/payment";
@@ -82,6 +85,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
         const dokuJson = await dokuRes.json();
         if (dokuRes.ok && dokuJson?.response?.payment?.url) {
+          // Do NOT mark as paid yet, wait for webhook or user manual check
           return NextResponse.json({
             success: true,
             isLiveRedirect: true,
@@ -89,17 +93,20 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             orderNumber: booking.orderNumber,
           });
         } else {
-          console.warn("[DOKU Production API Warning] Could not generate live URL, falling back to simulated verification:", dokuJson);
+          console.warn("[DOKU Production API Warning]", dokuJson);
+          return NextResponse.json({ success: false, error: "Failed to generate DOKU Checkout URL. Please check your API keys." }, { status: 400 });
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("[DOKU Production API Error]", err);
+        return NextResponse.json({ success: false, error: "DOKU API Error: " + err.message }, { status: 500 });
       }
     }
 
-    // 4. Update Database Booking Status upon successful payment verification
+    // --- ONLY REACHED IF SIMULATE === TRUE ---
+    // 4. Update Database Booking Status upon successful simulated payment verification
     const updatedFields = {
       paymentStatus: newPaymentStatus,
-      paymentMethod: `DOKU Production (${paymentMethod.toUpperCase()})`,
+      paymentMethod: `DOKU Simulated (${paymentMethod.toUpperCase()})`,
       paymentPaidAt: new Date().toISOString(),
     };
 
@@ -115,7 +122,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     return NextResponse.json({
       success: true,
-      message: `Payment verified via DOKU Production (${newPaymentStatus}) and confirmation emails dispatched.`,
+      message: `Payment verified via Simulation (${newPaymentStatus}) and confirmation emails dispatched.`,
       booking: updatedBooking,
       emailResult,
     });
