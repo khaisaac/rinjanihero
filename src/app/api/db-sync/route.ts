@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 
 export async function GET() {
-  const results = [];
+  const results: string[] = [];
   
   const addColumn = async (table: string, columnDef: string) => {
     try {
