@@ -35,7 +35,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // 3. Check DOKU Production Gateway Live Integration
     const dokuClientId = process.env.DOKU_CLIENT_ID;
     const dokuSecretKey = process.env.DOKU_SECRET_KEY;
-    const isProduction = process.env.DOKU_IS_PRODUCTION === "true" || true;
+    const isProduction = process.env.DOKU_IS_PRODUCTION === "true";
 
     if (!simulate) {
       if (!dokuClientId || !dokuSecretKey) {
@@ -94,7 +94,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           });
         } else {
           console.warn("[DOKU Production API Warning]", dokuJson);
-          return NextResponse.json({ success: false, error: "Failed to generate DOKU Checkout URL. Please check your API keys." }, { status: 400 });
+          const errorDetail = dokuJson?.error?.message || JSON.stringify(dokuJson);
+          return NextResponse.json({ success: false, error: "DOKU API Error: " + errorDetail }, { status: 400 });
         }
       } catch (err: any) {
         console.error("[DOKU Production API Error]", err);
