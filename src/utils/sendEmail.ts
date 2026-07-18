@@ -219,7 +219,7 @@ export async function sendBookingConfirmationEmails(booking: any, packageData?: 
         // Send to Client
         customerEmail
           ? resend.emails.send({
-              from: "Rinjani Hero Expeditions <permits@rinjanihero.com>",
+              from: "Rinjani Hero Expeditions <permits@rinjanihero.org>",
               to: [customerEmail],
               subject: `🏔️ OFFICIAL E-TICKET & PERMIT CONFIRMED: ${booking.packageTitle} | Order #${booking.orderNumber}`,
               html: clientHtml,
@@ -228,7 +228,7 @@ export async function sendBookingConfirmationEmails(booking: any, packageData?: 
 
         // Send to Admin (herorinjani@gmail.com)
         resend.emails.send({
-          from: "Rinjani Hero Booking System <system@rinjanihero.com>",
+          from: "Rinjani Hero Booking System <system@rinjanihero.org>",
           to: [adminEmail],
           subject: `🚨 NEW PAID BOOKING: #${booking.orderNumber} (${booking?.customer?.fullName}) - ${booking.packageTitle}`,
           html: adminHtml,
