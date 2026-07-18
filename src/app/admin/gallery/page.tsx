@@ -183,7 +183,7 @@ export default function AdminGalleryPage() {
                 <select
                   required
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 font-bold text-sm text-[#122826] focus:outline-none focus:border-[#18979B]"
                 >
                   <option value="summit">🏔️ Summit 3,726m</option>
