@@ -22,12 +22,12 @@ import {
   Sparkles,
   Award,
   ShieldCheck,
-  ArrowRight,
-  HeartHandshake,
+  Calendar,
+  CreditCard,
+  Check
 } from "lucide-react";
 import { useCMSStore } from "@/store/cmsStore";
 import { TrekkingPackage, PackageType, PricingTier } from "@/types/cms";
-// import PackageTypesAccordion from "../shared/PackageTypesAccordion";
 
 interface Props {
   pkg: TrekkingPackage;
@@ -40,7 +40,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [checkedGear, setCheckedGear] = useState<Record<number, boolean>>({});
-  const [participants, setParticipants] = useState<number>(1);
+  const [participants, setParticipants] = useState<number>(2); // Default to 2 for better UI
   const [packageType, setPackageType] = useState<PackageType>("Standard");
   const [trekDate, setTrekDate] = useState<string>(
     new Date(Date.now() + 86400000 * 10).toISOString().split("T")[0]
@@ -50,18 +50,15 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
     setCheckedGear((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  // Parse JSON data that might come as strings from DB
   const pricingMatrix = parseArray<PricingTier>(pkg.pricingMatrix);
   const parsedPackageTypes = parseJson<any>(pkg.packageTypes, {});
 
-  // Find applicable pricing tier
   const highestTier = pricingMatrix && pricingMatrix.length > 0 
     ? [...pricingMatrix].sort((a,b) => b.minPax - a.minPax)[0] 
     : undefined;
     
   const activeTier = pricingMatrix?.find(t => participants >= t.minPax && participants <= t.maxPax) || highestTier;
 
-  // Calculate base price
   let basePricePerPerson = pkg.priceUSD;
   if (activeTier) {
     if (packageType === "Private") basePricePerPerson = activeTier.pricePrivate;
@@ -83,6 +80,13 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
       returnUrl: `/packages/${pkg.slug}`,
     });
     router.push(`/booking?packageId=${pkg.id}&packageType=${packageType}`);
+  };
+
+  const getPriceForType = (type: string) => {
+      if (!activeTier) return pkg.priceUSD;
+      if (type === "Private") return activeTier.pricePrivate;
+      if (type === "Standard") return activeTier.priceStandard;
+      return activeTier.priceMeetingPoint;
   };
 
   return (
@@ -109,9 +113,6 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   ★ Most Popular Choice
                 </span>
               )}
-              <span className="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">
-                All-Inclusive Permits & Insurance
-              </span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#122826] tracking-tight">
               {pkg.title}
@@ -128,7 +129,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                   alert("Link copied to clipboard!");
                 }
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-gray-200 hover:border-[#18979B] text-gray-700 font-semibold text-xs transition"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 hover:border-[#18979B] text-gray-700 font-semibold text-sm transition"
             >
               <Share2 className="w-4 h-4 text-[#18979B]" />
               <span>Share Trip</span>
@@ -136,334 +137,370 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
           </div>
         </div>
 
-        {/* Gallery Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
-          <div
-            onClick={() => setSelectedImage(pkg.coverImage)}
-            className="lg:col-span-8 h-[380px] sm:h-[460px] rounded-3xl overflow-hidden relative cursor-pointer group shadow-lg"
-          >
-            <img
-              src={
-                pkg.coverImage && !pkg.coverImage.includes("unsplash.com")
-                  ? pkg.coverImage
-                  : pkg.route === "sembalun"
-                  ? "/sembalun.webp"
-                  : pkg.route === "senaru"
-                  ? "/senaru.webp"
-                  : pkg.route === "torean"
-                  ? "/torean.webp"
-                  : "/hero-rinjani.webp"
-              }
-              alt={pkg.title}
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.src =
-                  pkg.route === "sembalun"
-                    ? "/sembalun.webp"
-                    : pkg.route === "senaru"
-                    ? "/senaru.webp"
-                    : pkg.route === "torean"
-                    ? "/torean.webp"
-                    : "/hero-rinjani.webp";
-              }}
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-6 text-white">
-              <span className="flex items-center gap-1.5 text-xs font-bold bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-                <Maximize2 className="w-3.5 h-3.5" /> View Fullscreen Cover
-              </span>
-            </div>
-          </div>
-
-          <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4 h-full">
-            {parseArray(pkg.galleryImages).slice(1, 3).map((img: string, idx: number) => (
+        {/* Grid Layout Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* LEFT COLUMN */}
+          <div className="lg:col-span-8 space-y-10">
+            
+            {/* Gallery Section */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 h-[320px] sm:h-[420px]">
               <div
-                key={idx}
-                onClick={() => setSelectedImage(img)}
-                className="h-[180px] sm:h-[220px] rounded-3xl overflow-hidden relative cursor-pointer group shadow-md"
+                onClick={() => setSelectedImage(pkg.coverImage)}
+                className="sm:col-span-8 h-full rounded-2xl sm:rounded-l-3xl sm:rounded-r-none overflow-hidden relative cursor-pointer group shadow-sm"
               >
                 <img
-                  src={img}
-                  alt={`${pkg.title} photo ${idx + 2}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                  src={
+                    pkg.coverImage && !pkg.coverImage.includes("unsplash.com")
+                      ? pkg.coverImage
+                      : pkg.route === "sembalun"
+                      ? "/sembalun.webp"
+                      : pkg.route === "senaru"
+                      ? "/senaru.webp"
+                      : pkg.route === "torean"
+                      ? "/torean.webp"
+                      : "/hero-rinjani.webp"
+                  }
+                  alt={pkg.title}
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.src =
+                      pkg.route === "sembalun"
+                        ? "/sembalun.webp"
+                        : pkg.route === "senaru"
+                        ? "/senaru.webp"
+                        : pkg.route === "torean"
+                        ? "/torean.webp"
+                        : "/hero-rinjani.webp";
+                  }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Quick Info Strip Bar */}
-        <div className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 text-center">
-          <div className="flex items-center gap-3 justify-center text-left">
-            <div className="w-12 h-12 rounded-2xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center shrink-0">
-              <Clock className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs text-gray-400 block uppercase font-bold">Duration</span>
-              <span className="text-sm font-bold text-[#122826]">{pkg.durationDays} Days / {pkg.durationNights} Nights</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center text-left">
-            <div className="w-12 h-12 rounded-2xl bg-[#D4A017]/15 text-[#A87E0E] flex items-center justify-center shrink-0">
-              <TrendingUp className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs text-gray-400 block uppercase font-bold">Difficulty</span>
-              <span className="text-sm font-bold text-[#122826]">{pkg.difficulty}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center text-left">
-            <div className="w-12 h-12 rounded-2xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center shrink-0">
-              <Compass className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs text-gray-400 block uppercase font-bold">Max Altitude</span>
-              <span className="text-sm font-bold text-[#122826]">{pkg.maxAltitude}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center text-left">
-            <div className="w-12 h-12 rounded-2xl bg-[#D4A017]/15 text-[#A87E0E] flex items-center justify-center shrink-0">
-              <MapPin className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs text-gray-400 block uppercase font-bold">Meeting Point</span>
-              <span className="text-sm font-bold text-[#122826] line-clamp-1">{pkg.meetingPoint}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content + Sticky Booking Box Column */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Left Content Column (8 spans) */}
-          <div className="lg:col-span-8 space-y-10">
-            {/* Overview & Pricing */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-2xl font-extrabold text-[#122826] flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#D4A017]" />
-                  <span>Expedition Overview</span>
-                </h3>
-                <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
-                  {pkg.overview}
-                </p>
-              </div>
-
-              {pricingMatrix && pricingMatrix.length > 0 && (
-                <div className="space-y-4 pt-6 border-t border-gray-100">
-                  <h3 className="text-xl font-extrabold text-[#122826] flex items-center gap-2">
-                    <Award className="w-5 h-5 text-[#18979B]" />
-                    <span>Package Pricing (USD / Person)</span>
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[500px]">
-                      <thead>
-                        <tr className="bg-gray-50 border-y border-gray-200">
-                          <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Group Size</th>
-                          <th className="px-4 py-3 text-xs font-bold text-[#D4A017] uppercase bg-amber-50/50">Private</th>
-                          <th className="px-4 py-3 text-xs font-bold text-[#18979B] uppercase">Standard</th>
-                          <th className="px-4 py-3 text-xs font-bold text-gray-600 uppercase">Meeting Point</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {pricingMatrix.map((tier, idx) => (
-                          <tr key={idx} className="hover:bg-gray-50 transition">
-                            <td className="px-4 py-3 text-sm font-bold text-[#122826]">{tier.groupSize}</td>
-                            <td className="px-4 py-3 text-sm font-extrabold text-[#D4A017] bg-amber-50/30">${tier.pricePrivate}</td>
-                            <td className="px-4 py-3 text-sm font-bold text-[#18979B]">${tier.priceStandard}</td>
-                            <td className="px-4 py-3 text-sm font-semibold text-gray-600">${tier.priceMeetingPoint}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-6 text-white">
+                  <span className="flex items-center gap-1.5 text-xs font-bold bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+                    <Maximize2 className="w-3.5 h-3.5" /> View Fullscreen Cover
+                  </span>
                 </div>
-              )}
-              
+              </div>
 
+              <div className="hidden sm:grid sm:col-span-4 grid-cols-2 grid-rows-2 gap-2 h-full">
+                {parseArray(pkg.galleryImages).slice(1, 5).map((img: string, idx: number) => {
+                  let roundedClass = "";
+                  if (idx === 1) roundedClass = "rounded-tr-3xl";
+                  if (idx === 3) roundedClass = "rounded-br-3xl";
+                  
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => setSelectedImage(img)}
+                      className={`h-full overflow-hidden relative cursor-pointer group shadow-sm ${roundedClass}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${pkg.title} photo ${idx + 2}`}
+                        className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Overview */}
+            <div className="text-gray-700 text-base leading-relaxed whitespace-pre-line px-2">
+              {pkg.overview}
+            </div>
+
+            {/* Pricing Information Table */}
+            {pricingMatrix && pricingMatrix.length > 0 && (
+              <div className="space-y-4 pt-4">
+                <h3 className="text-xl font-extrabold text-[#122826] px-2">Pricing Information</h3>
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
+                    <thead>
+                      <tr className="border-b border-gray-100">
+                        <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Group Size</th>
+                        <th className="px-4 py-3 text-xs font-bold text-[#D4A017] uppercase tracking-wider bg-amber-50/50 rounded-t-xl">Private</th>
+                        <th className="px-4 py-3 text-xs font-bold text-[#18979B] uppercase tracking-wider">Standard</th>
+                        <th className="px-4 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Meeting Point</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {pricingMatrix.map((tier, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50/50 transition">
+                          <td className="px-4 py-4 text-sm font-bold text-[#122826]">{tier.groupSize}</td>
+                          <td className="px-4 py-4 text-sm font-extrabold text-[#D4A017] bg-amber-50/30">${tier.pricePrivate}</td>
+                          <td className="px-4 py-4 text-sm font-bold text-[#18979B]">${tier.priceStandard}</td>
+                          <td className="px-4 py-4 text-sm font-semibold text-gray-600">${tier.priceMeetingPoint}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Info Strip Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-2">
+                <Clock className="w-6 h-6 text-[#18979B]" />
+                <div>
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Duration</span>
+                  <span className="text-sm font-bold text-[#122826]">{pkg.durationDays}D / {pkg.durationNights}N</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-2">
+                <TrendingUp className="w-6 h-6 text-[#A87E0E]" />
+                <div>
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Difficulty</span>
+                  <span className="text-sm font-bold text-[#122826]">{pkg.difficulty}</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-2">
+                <Compass className="w-6 h-6 text-[#18979B]" />
+                <div>
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Max Altitude</span>
+                  <span className="text-sm font-bold text-[#122826]">{pkg.maxAltitude}</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-2">
+                <MapPin className="w-6 h-6 text-[#A87E0E]" />
+                <div>
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Meeting Point</span>
+                  <span className="text-sm font-bold text-[#122826] line-clamp-1">{pkg.meetingPoint}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* About this activity */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 space-y-6">
+              <h3 className="text-xl font-extrabold text-[#122826]">About this activity</h3>
+              <ul className="space-y-5">
+                <li className="flex items-start gap-4">
+                  <div className="mt-1">
+                    <CheckCircle2 className="w-6 h-6 text-[#18979B]" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-base text-[#122826]">Free cancellation</div>
+                    <div className="text-sm text-gray-500 mt-1">Cancel up to 24 hours in advance for a full refund</div>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1">
+                    <CreditCard className="w-6 h-6 text-[#18979B]" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-base text-[#122826]">Reserve now & pay later</div>
+                    <div className="text-sm text-gray-500 mt-1">Keep your travel plans flexible — book your spot and pay nothing today.</div>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="mt-1">
+                    <Calendar className="w-6 h-6 text-[#18979B]" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-base text-[#122826]">Duration {pkg.durationDays} Days</div>
+                    <div className="text-sm text-gray-500 mt-1">Check availability to see starting times.</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Package Options */}
+            <div className="space-y-4 pt-4">
+              <h3 className="text-2xl font-extrabold text-[#122826] px-2 mb-6">Package Options</h3>
+              
+              {(["Private", "Standard", "Meeting Point"] as const).map((type) => {
+                const isSelected = packageType === type;
+                const details = parsedPackageTypes?.[
+                  type === "Standard" ? "standard" : 
+                  type === "Private" ? "private" : "meetingPoint"
+                ];
+
+                return (
+                  <div 
+                    key={type} 
+                    className={`border rounded-3xl overflow-hidden transition-all duration-300 ${
+                      isSelected 
+                        ? 'border-[#18979B] shadow-md ring-1 ring-[#18979B]/20 bg-white' 
+                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    <div 
+                      onClick={() => setPackageType(type)}
+                      className={`p-6 cursor-pointer flex items-center justify-between ${isSelected ? 'bg-[#18979B]/5' : ''}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected ? 'border-[#18979B] bg-[#18979B]' : 'border-gray-300'
+                        }`}>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                        <h4 className="text-lg font-bold text-[#122826]">{type} Package</h4>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-extrabold text-[#18979B]">${getPriceForType(type)}</div>
+                        <div className="text-xs text-gray-500">per person</div>
+                      </div>
+                    </div>
+                    
+                    {isSelected && (
+                      <div className="px-6 pb-8 pt-4 border-t border-gray-100 bg-white animate-in slide-in-from-top-2 fade-in duration-300">
+                        {details?.description && (
+                          <div 
+                            className="text-gray-600 prose prose-sm max-w-none prose-p:leading-relaxed mb-6"
+                            dangerouslySetInnerHTML={{ __html: details.description }}
+                          />
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <h5 className="font-bold text-[#122826] flex items-center gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                              What's included
+                            </h5>
+                            <ul className="space-y-2.5">
+                              {(details?.includes || []).map((inc: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                                  <span>{inc}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="space-y-4">
+                            <h5 className="font-bold text-[#122826] flex items-center gap-2">
+                              <XCircle className="w-4 h-4 text-red-500" />
+                              What's not included
+                            </h5>
+                            <ul className="space-y-2.5">
+                              {(details?.excludes || []).map((exc: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                  <X className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                                  <span>{exc}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Itinerary Section */}
             <div className="space-y-6 pt-10 border-t border-gray-100">
-              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">🗓️ Day-by-Day Itinerary</h3>
-                {parseArray(pkg.itinerary).map((day: any) => (
-                  <div key={day.day} className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 bottom-0 w-3 bg-[#18979B]" />
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4">
-                      <h4 className="text-lg sm:text-xl font-extrabold text-[#122826] flex items-center gap-2.5">
-                        <span className="w-8 h-8 rounded-xl bg-[#18979B] text-white flex items-center justify-center text-sm font-black shrink-0">
-                          {day.day}
-                        </span>
-                        <span>{day.title}</span>
-                      </h4>
-                      <div className="flex items-center gap-3 text-xs font-semibold text-gray-500">
-                        <span className="bg-[#F8FAF9] px-2.5 py-1 rounded-lg border border-gray-200">
-                          🏔️ {day.altitude}
-                        </span>
-                        <span className="bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200">
-                          🍴 {day.meals}
-                        </span>
+              <h3 className="text-2xl font-extrabold text-[#122826] px-2 mb-6">🗓️ Day-by-Day Itinerary</h3>
+              {parseArray(pkg.itinerary).map((day: any) => (
+                <div key={day.day} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 bottom-0 w-2 bg-[#18979B]" />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4 ml-2">
+                    <h4 className="text-lg sm:text-xl font-extrabold text-[#122826] flex items-center gap-2.5">
+                      <span className="w-8 h-8 rounded-xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center text-sm font-black shrink-0">
+                        {day.day}
+                      </span>
+                      <span>{day.title}</span>
+                    </h4>
+                    <div className="flex items-center gap-3 text-xs font-semibold text-gray-500">
+                      <span className="bg-[#F8FAF9] px-2.5 py-1 rounded-lg border border-gray-200">
+                        🏔️ {day.altitude}
+                      </span>
+                      <span className="bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200">
+                        🍴 {day.meals}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed ml-2">
+                    {day.description}
+                  </p>
+
+                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-2 ml-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-3">Day {day.day} Highlights</span>
+                    {parseArray(day.highlights).map((hl: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2.5 text-sm text-gray-700 font-medium">
+                        <CheckCircle2 className="w-4 h-4 text-[#18979B]" />
+                        <span>{hl}</span>
                       </div>
-                    </div>
-
-                    <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
-                      {day.description}
-                    </p>
-
-                    <div className="mt-4 pt-4 border-t border-gray-100 space-y-1.5">
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#D4A017] block">Day {day.day} Highlights:</span>
-                      {parseArray(day.highlights).map((hl: string, i: number) => (
-                        <div key={i} className="flex items-center gap-2 text-xs text-gray-700 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#18979B]" />
-                          <span>{hl}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-            {/* Includes / Excludes Section */}
-            <div className="space-y-6 pt-10 border-t border-gray-100">
-              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">✅ Includes & Excludes</h3>
-                {/* Package Type Switcher */}
-                <div className="flex p-1.5 bg-gray-100 rounded-2xl w-full max-w-lg mx-auto">
-                  {(["Standard", "Private", "Meeting Point"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setPackageType(type)}
-                      className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
-                        packageType === type
-                          ? "bg-white text-[#18979B] shadow-sm scale-105"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Description Rendering */}
-                <div 
-                  className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 text-gray-600 prose prose-sm max-w-none prose-p:leading-relaxed"
-                  dangerouslySetInnerHTML={{ 
-                    __html: parsedPackageTypes?.[
-                      packageType === "Standard" ? "standard" : 
-                      packageType === "Private" ? "private" : "meetingPoint"
-                    ]?.description || "" 
-                  }}
-                />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
-                    <h4 className="text-lg font-bold text-emerald-800 flex items-center gap-2 pb-3 border-b border-emerald-100">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                      <span>What is Included ({packageType})</span>
-                    </h4>
-                    <ul className="space-y-3">
-                      {(parsedPackageTypes?.[
-                        packageType === "Standard" ? "standard" : 
-                        packageType === "Private" ? "private" : "meetingPoint"
-                      ]?.includes || []).map((inc: string, i: number) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>{inc}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-red-100 space-y-4">
-                    <h4 className="text-lg font-bold text-red-800 flex items-center gap-2 pb-3 border-b border-red-100">
-                      <XCircle className="w-5 h-5 text-red-500" />
-                      <span>What is Excluded ({packageType})</span>
-                    </h4>
-                    <ul className="space-y-3">
-                      {(parsedPackageTypes?.[
-                        packageType === "Standard" ? "standard" : 
-                        packageType === "Private" ? "private" : "meetingPoint"
-                      ]?.excludes || []).map((exc: string, i: number) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
-                          <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                          <span>{exc}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    ))}
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
             {/* Things To Bring Checklist Section */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6 mt-10">
-                <div>
-                  <h4 className="text-xl font-bold text-[#122826] flex items-center gap-2">
-                    <CheckSquare className="w-5 h-5 text-[#18979B]" />
-                    <span>Interactive Gear Preparation Checklist</span>
-                  </h4>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Check off items as you pack into your daypack. Heavy camping tents, sleeping bags, and meals are carried by our porters!
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {parseArray(pkg.thingsToBring).map((item: string, idx: number) => {
-                    const checked = !!checkedGear[idx];
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => toggleGear(idx)}
-                        className={`p-4 rounded-2xl border transition cursor-pointer flex items-center gap-3 select-none ${
-                          checked
-                            ? "bg-emerald-50 border-emerald-300 text-emerald-900"
-                            : "bg-[#F8FAF9] border-gray-200 hover:border-[#18979B] text-gray-700"
-                        }`}
-                      >
-                        {checked ? (
-                          <CheckSquare className="w-5 h-5 text-emerald-600 shrink-0" />
-                        ) : (
-                          <Square className="w-5 h-5 text-gray-400 shrink-0" />
-                        )}
-                        <span className={`text-sm font-semibold ${checked ? "line-through opacity-80" : ""}`}>
-                          {item}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 space-y-6 mt-10">
+              <div>
+                <h4 className="text-xl font-bold text-[#122826] flex items-center gap-2">
+                  <CheckSquare className="w-5 h-5 text-[#18979B]" />
+                  <span>Preparation Checklist</span>
+                </h4>
+                <p className="text-sm text-gray-500 mt-1">
+                  Check off items as you pack. Heavy camping tents, sleeping bags, and meals are carried by our porters!
+                </p>
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {parseArray(pkg.thingsToBring).map((item: string, idx: number) => {
+                  const checked = !!checkedGear[idx];
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => toggleGear(idx)}
+                      className={`p-4 rounded-2xl border transition cursor-pointer flex items-center gap-3 select-none ${
+                        checked
+                          ? "bg-emerald-50 border-emerald-300 text-emerald-900"
+                          : "bg-[#F8FAF9] border-gray-200 hover:border-[#18979B] text-gray-700"
+                      }`}
+                    >
+                      {checked ? (
+                        <CheckSquare className="w-5 h-5 text-emerald-600 shrink-0" />
+                      ) : (
+                        <Square className="w-5 h-5 text-gray-400 shrink-0" />
+                      )}
+                      <span className={`text-sm font-semibold ${checked ? "line-through opacity-80" : ""}`}>
+                        {item}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* FAQ Section */}
             <div className="space-y-4 pt-10 border-t border-gray-100">
-              <h3 className="text-2xl font-extrabold text-[#122826] mb-6">❓ Trekking FAQ</h3>
-                {parseArray(pkg.faq).map((f: any, i: number) => (
-                  <div key={i} className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 space-y-2">
-                    <h5 className="text-base font-bold text-[#122826] flex items-center gap-2">
-                      <HelpCircle className="w-4 h-4 text-[#18979B] shrink-0" />
-                      <span>{f.question}</span>
-                    </h5>
-                    <p className="text-sm text-gray-600 leading-relaxed pl-6">
-                      {f.answer}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-2xl font-extrabold text-[#122826] px-2 mb-6">❓ Frequently Asked Questions (FAQ)</h3>
+              {parseArray(pkg.faq).map((f: any, i: number) => (
+                <div key={i} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-3">
+                  <h5 className="text-base font-bold text-[#122826] flex items-start gap-3">
+                    <HelpCircle className="w-5 h-5 text-[#18979B] shrink-0 mt-0.5" />
+                    <span>{f.question}</span>
+                  </h5>
+                  <p className="text-sm text-gray-600 leading-relaxed pl-8">
+                    {f.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+
             {/* Related Packages Carousel/Cards */}
             {relatedPackages.length > 0 && (
-              <div className="pt-8 border-t border-gray-200">
-                <h3 className="text-2xl font-extrabold text-[#122826] mb-6">
-                  Recommended Similar Expeditions
+              <div className="pt-10 border-t border-gray-200">
+                <h3 className="text-2xl font-extrabold text-[#122826] px-2 mb-6">
+                  Related Tour
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {relatedPackages.map((rel) => (
                     <div
                       key={rel.id}
-                      className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 flex flex-col justify-between group"
+                      className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col justify-between group"
                     >
-                      <div className="h-44 relative overflow-hidden">
+                      <div className="h-48 relative overflow-hidden">
                         <img
                           src={
                             rel.coverImage && !rel.coverImage.includes("unsplash.com")
@@ -478,7 +515,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                           }
                           alt={rel.title}
                           onError={(e) => {
-                            const target = e.currentTarget;
+                            const target = e.currentTarget as HTMLImageElement;
                             target.src =
                               rel.route === "sembalun"
                                 ? "/sembalun.webp"
@@ -490,19 +527,23 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                           }}
                           className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         />
-                        <span className="absolute top-3 left-3 bg-[#122826]/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                        <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[#122826] text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
                           {rel.route} Route
                         </span>
                       </div>
-                      <div className="p-5 space-y-2">
+                      <div className="p-5 space-y-3">
+                        <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>{rel.durationDays} Days / {rel.durationNights} Nights</span>
+                        </div>
                         <Link href={`/packages/${rel.slug}`}>
-                          <h4 className="font-bold text-[#122826] group-hover:text-[#18979B] transition line-clamp-1">
+                          <h4 className="font-bold text-[#122826] group-hover:text-[#18979B] transition line-clamp-2 text-lg">
                             {rel.title}
                           </h4>
                         </Link>
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>{rel.durationDays} Days / {rel.durationNights} Nights</span>
-                          <span className="font-extrabold text-[#122826] text-base">${rel.priceUSD}</span>
+                        <div className="pt-3 flex items-center justify-between border-t border-gray-100 mt-2">
+                          <span className="text-xs text-gray-500 uppercase font-bold tracking-wider">From</span>
+                          <span className="font-black text-[#18979B] text-xl">${rel.priceUSD}</span>
                         </div>
                       </div>
                     </div>
@@ -510,162 +551,131 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                 </div>
               </div>
             )}
+
           </div>
 
-          {/* Right Sticky Booking Summary Box Column (4 spans) */}
+          {/* RIGHT COLUMN (STICKY WIDGET) */}
           <div className="lg:col-span-4 lg:sticky lg:top-28">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-200 text-[#122826] space-y-6">
-              <div className="pb-4 border-b border-gray-100 flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-[#D4A017] uppercase font-extrabold tracking-wider block">Total Price ({participants} pax)</span>
-                  <div className="flex items-baseline gap-1.5 mt-0.5">
-                    <span className="text-3xl font-black text-[#122826]">${grandTotal}</span>
-                    <span className="text-xs text-gray-500 font-medium">USD</span>
-                  </div>
-                </div>
-                <div className="text-right flex flex-col gap-1 items-end">
-                  <span className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-100">
-                    Deposit {pkg.depositPercentage}%
-                  </span>
-                  <span className="text-xs text-gray-500">${basePricePerPerson}/person</span>
-                </div>
-              </div>
-
-              {/* Booking Customization Controls */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
-                    Target Trekking Date
-                  </label>
-                  <input
-                    type="date"
-                    value={trekDate}
-                    onChange={(e) => setTrekDate(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#122826] font-semibold focus:outline-none focus:border-[#18979B] cursor-pointer"
-                    min={new Date().toISOString().split("T")[0]}
-                  />
+            <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 overflow-hidden">
+              <div className="p-6 sm:p-8 space-y-6">
+                
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-gray-500 uppercase font-bold tracking-wider">Price</span>
+                  <div className="text-3xl font-black text-[#122826]">${basePricePerPerson}</div>
+                  <span className="text-sm text-gray-500">per person</span>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
-                    Number of Trekkers
-                  </label>
-                  <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
-                    <div className="flex items-center gap-2.5 text-sm font-semibold">
-                      <Users className="w-4 h-4 text-[#18979B]" />
-                      <span>{participants} {participants === 1 ? "Person" : "People"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setParticipants(Math.max(1, participants - 1))}
-                        className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-[#18979B] hover:text-white text-gray-700 font-bold transition flex items-center justify-center text-sm"
-                      >
-                        -
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setParticipants(participants + 1)}
-                        className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-[#18979B] hover:text-white text-gray-700 font-bold transition flex items-center justify-center text-sm"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Package Type Selector */}
-                {pricingMatrix && pricingMatrix.length > 0 && (
+                <div className="space-y-4">
+                  {/* Package Type Selection (Syncs with Left Column) */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-[#122826] mb-2 uppercase tracking-wider">
                       Select Package Type
                     </label>
-                    <div className="grid grid-cols-1 gap-2">
-                      {["Private", "Standard", "Meeting Point"].map((ptype) => (
-                        <div
-                          key={ptype}
-                          onClick={() => setPackageType(ptype as PackageType)}
-                          className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                            packageType === ptype
-                              ? ptype === "Private" ? "bg-amber-50 border-[#D4A017] text-[#122826]" : "bg-emerald-50 border-[#18979B] text-[#122826]"
-                              : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                          }`}
+                    <select 
+                      value={packageType}
+                      onChange={(e) => setPackageType(e.target.value as PackageType)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#122826] font-semibold focus:outline-none focus:ring-2 focus:ring-[#18979B]/20 focus:border-[#18979B] appearance-none"
+                    >
+                      <option value="Standard">Standard Package</option>
+                      <option value="Private">Private Package</option>
+                      <option value="Meeting Point">Meeting Point Package</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#122826] mb-2 uppercase tracking-wider">
+                      Target Trekking Date
+                    </label>
+                    <input
+                      type="date"
+                      value={trekDate}
+                      onChange={(e) => setTrekDate(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#122826] font-semibold focus:outline-none focus:ring-2 focus:ring-[#18979B]/20 focus:border-[#18979B]"
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#122826] mb-2 uppercase tracking-wider">
+                      Number of Trekkers
+                    </label>
+                    <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2">
+                      <div className="flex items-center gap-2.5 text-sm font-semibold">
+                        <Users className="w-4 h-4 text-[#18979B]" />
+                        <span>{participants} {participants === 1 ? "Adult" : "Adults"}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setParticipants(Math.max(1, participants - 1))}
+                          className="w-8 h-8 rounded-lg bg-white border border-gray-200 hover:border-[#18979B] hover:text-[#18979B] text-gray-600 font-bold transition flex items-center justify-center shadow-sm"
                         >
-                          <div className="flex items-center gap-2.5">
-                            {packageType === ptype ? (
-                              <CheckSquare className={`w-5 h-5 shrink-0 ${ptype === "Private" ? "text-[#D4A017]" : "text-[#18979B]"}`} />
-                            ) : (
-                              <Square className="w-5 h-5 text-gray-400 shrink-0" />
-                            )}
-                            <div>
-                              <h5 className={`text-xs font-bold ${packageType === ptype ? 'text-[#122826]' : 'text-gray-600'}`}>{ptype} Package</h5>
-                            </div>
-                          </div>
-                          {activeTier && (
-                            <span className={`text-xs font-extrabold ${ptype === "Private" ? "text-[#D4A017]" : "text-[#18979B]"}`}>
-                              ${ptype === "Private" ? activeTier.pricePrivate : ptype === "Standard" ? activeTier.priceStandard : activeTier.priceMeetingPoint} / pax
-                            </span>
-                          )}
-                        </div>
-                      ))}
+                          -
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setParticipants(participants + 1)}
+                          className="w-8 h-8 rounded-lg bg-white border border-gray-200 hover:border-[#18979B] hover:text-[#18979B] text-gray-600 font-bold transition flex items-center justify-center shadow-sm"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   </div>
-                )}
+                </div>
+
+                <div className="pt-4 space-y-4">
+                  <div className="flex items-center justify-between text-sm font-bold text-[#122826]">
+                    <span>Total ({participants} pax)</span>
+                    <span className="text-lg text-[#18979B]">${grandTotal}</span>
+                  </div>
+
+                  <button
+                    onClick={handleProceedBooking}
+                    className="w-full bg-[#18979B] hover:bg-[#122826] text-white font-extrabold py-4 px-6 rounded-xl shadow-lg shadow-[#18979B]/20 hover:shadow-xl transition flex items-center justify-center gap-2 text-base tracking-wide"
+                  >
+                    Book Now
+                  </button>
+                </div>
+                
+              </div>
+              
+              <div className="bg-gray-50 p-6 border-t border-gray-100 text-sm text-gray-600 space-y-3">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-[#18979B] mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-bold text-[#122826] block">Free cancellation</span>
+                    <span className="text-xs">Cancel up to 24 hours in advance for a full refund</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CreditCard className="w-4 h-4 text-[#18979B] mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-bold text-[#122826] block">Reserve now & pay later</span>
+                    <span className="text-xs">Keep your travel plans flexible</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Price Breakdown */}
-              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-gray-600">
-                  <span>Base ({participants} × ${basePricePerPerson}):</span>
-                  <span className="font-bold text-[#122826]">${grandTotal}</span>
-                </div>
-                <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-sm font-extrabold text-[#122826]">
-                  <span>Grand Total:</span>
-                  <span className="text-[#D4A017]">${grandTotal} USD</span>
-                </div>
-                <div className="flex items-center justify-between text-emerald-600 font-bold pt-1">
-                  <span>Required Deposit ({pkg.depositPercentage}%):</span>
-                  <span>${depositAmount} USD</span>
-                </div>
-              </div>
-
-              {/* Proceed to Booking CTA */}
-              <button
-                onClick={handleProceedBooking}
-                className="w-full bg-gradient-to-r from-[#D4A017] via-[#F3C644] to-[#B8860B] hover:from-[#F3C644] hover:to-[#D4A017] text-[#122826] font-extrabold py-4 px-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base uppercase tracking-wider"
-              >
-                <CalendarCheck className="w-5 h-5" />
-                <span>Proceed to Booking</span>
-              </button>
-
-              <div className="text-center text-[11px] text-gray-500 space-y-1">
-                <div className="flex items-center justify-center gap-1.5 text-emerald-600 font-bold">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Instant E-Ticket Barcode & Insurance Included</span>
-                </div>
-                <p>Remaining balance payable online or upon arrival in cash.</p>
-              </div>
             </div>
           </div>
+          
         </div>
       </div>
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative max-w-5xl w-full bg-[#122826] rounded-3xl overflow-hidden shadow-2xl border border-white/20">
-            <div className="p-4 bg-[#122826] flex items-center justify-between border-b border-white/10 text-white">
-              <span className="font-bold text-sm">{pkg.title}</span>
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="relative max-w-5xl w-full bg-transparent rounded-3xl overflow-hidden flex flex-col items-center">
+            <div className="w-full flex justify-end p-4 absolute top-0 right-0 z-10">
               <button
                 onClick={() => setSelectedImage(null)}
-                className="p-2 text-gray-400 hover:text-white bg-white/10 rounded-xl transition"
+                className="p-3 bg-black/50 hover:bg-white text-white hover:text-black rounded-full transition backdrop-blur-sm"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="max-h-[80vh] flex items-center justify-center bg-black overflow-hidden">
-              <img src={selectedImage} alt={pkg.title} className="max-w-full max-h-[80vh] object-contain" />
-            </div>
+            <img src={selectedImage} alt={pkg.title} className="max-w-full max-h-[85vh] object-contain rounded-xl" />
           </div>
         </div>
       )}
