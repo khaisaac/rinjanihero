@@ -275,39 +275,6 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
               </div>
             </div>
 
-            {/* About this activity */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 space-y-6">
-              <h3 className="text-xl font-extrabold text-[#122826]">About this activity</h3>
-              <ul className="space-y-5">
-                <li className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <CheckCircle2 className="w-6 h-6 text-[#18979B]" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-base text-[#122826]">Free cancellation</div>
-                    <div className="text-sm text-gray-500 mt-1">Cancel up to 24 hours in advance for a full refund</div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <CreditCard className="w-6 h-6 text-[#18979B]" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-base text-[#122826]">Reserve now & pay later</div>
-                    <div className="text-sm text-gray-500 mt-1">Keep your travel plans flexible — book your spot and pay nothing today.</div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <Calendar className="w-6 h-6 text-[#18979B]" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-base text-[#122826]">Duration {pkg.durationDays} Days</div>
-                    <div className="text-sm text-gray-500 mt-1">Check availability to see starting times.</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
 
             {/* Package Options */}
             <div className="space-y-4 pt-4">
