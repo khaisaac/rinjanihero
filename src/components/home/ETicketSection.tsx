@@ -14,10 +14,11 @@ export default function ETicketSection() {
     setBookingPrefill({
       serviceType: "E-Ticket",
       route: ticket.title,
+      packageId: ticket.id,
       adults: 2,
       returnUrl: "/#eticket",
     });
-    router.push("/booking");
+    router.push("/booking/eticket");
   };
 
   return (
