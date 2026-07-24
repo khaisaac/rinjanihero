@@ -255,4 +255,13 @@ export interface WebsiteSettings {
   packageStandardDesc?: string;
   packagePrivateDesc?: string;
   packageMeetingPointDesc?: string;
+  whyChooseUs?: WhyChooseUsItem[];
+}
+
+export interface WhyChooseUsItem {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  color: string;
 }

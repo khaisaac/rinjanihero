@@ -33,6 +33,50 @@ export const initialWebsiteSettings: WebsiteSettings = {
   packageStandardDesc: "Standard packages are designed for budget-conscious trekkers who want to experience Mount Rinjani without breaking the bank. You will join a group of other trekkers (max 10 people) and share the facilities. This includes standard camping equipment, shared porter for group logistics, and basic meals.",
   packagePrivateDesc: "Private packages offer a premium, personalized trekking experience. You will have your own private guide and porters, ensuring a flexible pace. This package includes premium camping equipment, private transport, high-quality meals, and personalized attention throughout the journey.",
   packageMeetingPointDesc: "Meeting Point packages are perfect for independent travelers who prefer to arrange their own transport and accommodation before the trek. You simply meet our team at the designated starting point (Senaru or Sembalun) on the morning of the trek. This includes all trekking necessities but excludes pre/post-trek logistics.",
+  whyChooseUs: [
+    {
+      id: "wcu-1",
+      icon: "Award",
+      title: "Experienced Local Guides",
+      description: "Our guides and porters are native to Senaru with 10+ years of climbing experience on Mount Rinjani.",
+      color: "from-[#18979B] to-[#13797C]",
+    },
+    {
+      id: "wcu-2",
+      icon: "ShieldCheck",
+      title: "Licensed Official Company",
+      description: "Fully registered and recognized by the Rinjani National Park office and Indonesian Ministry of Tourism.",
+      color: "from-[#D4A017] to-[#B8860B]",
+    },
+    {
+      id: "wcu-3",
+      icon: "DollarSign",
+      title: "Best Price Guarantee",
+      description: "Direct operator rates with zero middleman agency fees or hidden costs. Deposit only 30% to secure your dates.",
+      color: "from-[#18979B] to-[#13797C]",
+    },
+    {
+      id: "wcu-4",
+      icon: "HeartPulse",
+      title: "Safety First Standards",
+      description: "Every trek is equipped with emergency oxygen cylinders, first aid kits, and guides certified in mountain wilderness rescue.",
+      color: "from-[#D4A017] to-[#B8860B]",
+    },
+    {
+      id: "wcu-5",
+      icon: "Utensils",
+      title: "Gourmet Mountain Dining",
+      description: "Enjoy 3 freshly cooked, nutritious hot meals per day + tropical fruit platters, banana pancakes, tea, and Lombok coffee.",
+      color: "from-[#18979B] to-[#13797C]",
+    },
+    {
+      id: "wcu-6",
+      icon: "CalendarDays",
+      title: "Flexible Rescheduling",
+      description: "Plans changed? Modify your trekking dates 100% free of charge with at least 7 days notice.",
+      color: "from-[#D4A017] to-[#B8860B]",
+    },
+  ],
 };
 
 export const initialRoutes: RouteInfo[] = [

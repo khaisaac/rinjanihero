@@ -365,8 +365,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
               <h3 className="text-2xl font-extrabold text-[#122826] px-2 mb-6">🗓️ Day-by-Day Itinerary</h3>
               {parseArray(pkg.itinerary).map((day: any) => (
                 <div key={day.day} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 bottom-0 w-2 bg-[#18979B]" />
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4 ml-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4">
                     <h4 className="text-lg sm:text-xl font-extrabold text-[#122826] flex items-center gap-2.5">
                       <span className="w-8 h-8 rounded-xl bg-[#18979B]/10 text-[#18979B] flex items-center justify-center text-sm font-black shrink-0">
                         {day.day}
@@ -383,11 +382,11 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
                     </div>
                   </div>
 
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed ml-2">
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
                     {day.description}
                   </p>
 
-                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-2 ml-2">
+                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-3">Day {day.day} Highlights</span>
                     {parseArray(day.highlights).map((hl: string, i: number) => (
                       <div key={i} className="flex items-center gap-2.5 text-sm text-gray-700 font-medium">
@@ -405,7 +404,7 @@ export default function PackageDetailClient({ pkg, relatedPackages }: Props) {
               <div>
                 <h4 className="text-xl font-bold text-[#122826] flex items-center gap-2">
                   <CheckSquare className="w-5 h-5 text-[#18979B]" />
-                  <span>Preparation Checklist</span>
+                  <span>Should to Bring</span>
                 </h4>
                 <p className="text-sm text-gray-500 mt-1">
                   Check off items as you pack. Heavy camping tents, sleeping bags, and meals are carried by our porters!

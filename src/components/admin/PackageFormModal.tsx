@@ -149,7 +149,7 @@ export default function PackageFormModal({
   initialData,
   onSave,
 }: PackageFormModalProps) {
-  const [activeTab, setActiveTab] = useState<"basic" | "details" | "lists" | "itinerary">("basic");
+  const [activeTab, setActiveTab] = useState<"basic" | "details" | "lists" | "itinerary" | "faq">("basic");
   const [formData, setFormData] = useState<TrekkingPackage>(defaultPackage);
 
   // Helper strings for textarea lists
@@ -236,6 +236,31 @@ export default function PackageFormModal({
     }));
   };
 
+  const handleAddFaq = () => {
+    setFormData((prev) => ({
+      ...prev,
+      faq: [
+        ...(prev.faq || []),
+        { question: "New Question?", answer: "Answer here." },
+      ],
+    }));
+  };
+
+  const handleRemoveFaq = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      faq: (prev.faq || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
+    setFormData((prev) => {
+      const updated = [...(prev.faq || [])];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...prev, faq: updated };
+    });
+  };
+
   const handleItineraryChange = (index: number, field: string, value: any) => {
     setFormData((prev) => {
       const updated = [...prev.itinerary];
@@ -303,6 +328,7 @@ export default function PackageFormModal({
             { id: "details", label: "2. Overview & Images", icon: FileText },
             { id: "lists", label: "3. Types & Items", icon: ListCheck },
             { id: "itinerary", label: `4. Itinerary (${formData.itinerary?.length || 0} Days)`, icon: Calendar },
+            { id: "faq", label: `5. FAQ (${formData.faq?.length || 0})`, icon: HelpCircle },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -801,7 +827,7 @@ export default function PackageFormModal({
 
               <div>
                 <label className="block text-xs font-extrabold text-[#18979B] uppercase tracking-wider mb-1">
-                  🎒 Things to Bring (Global for this Package)
+                  🎒 Should to Bring (Global for this Package)
                 </label>
                 <textarea
                   rows={4}
@@ -909,6 +935,64 @@ export default function PackageFormModal({
                           placeholder="e.g. Rainforest, Crater Rim Sunset"
                         />
                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: FAQ */}
+          {activeTab === "faq" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-extrabold text-sm text-[#122826]">Frequently Asked Questions</h4>
+                  <p className="text-xs text-gray-500">Manage FAQs for this specific package</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAddFaq}
+                  className="px-4 py-2 rounded-xl bg-[#18979B] hover:bg-[#13797C] text-white font-extrabold text-xs shadow flex items-center gap-1.5 transition"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add FAQ</span>
+                </button>
+              </div>
+
+              <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
+                {(formData.faq || []).map((item, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-gray-50 border border-gray-200 space-y-3 relative">
+                    <div className="flex items-center justify-between">
+                      <span className="bg-[#122826] text-white font-extrabold text-xs px-3 py-1 rounded-full">
+                        FAQ {idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFaq(idx)}
+                        className="text-red-500 hover:text-red-700 p-1 rounded-lg hover:bg-red-50 transition"
+                        title="Remove this FAQ"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Question</label>
+                      <input
+                        type="text"
+                        value={item.question}
+                        onChange={(e) => handleFaqChange(idx, "question", e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-gray-300 font-bold text-xs text-[#122826]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">Answer</label>
+                      <textarea
+                        rows={2}
+                        value={item.answer}
+                        onChange={(e) => handleFaqChange(idx, "answer", e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-gray-300 text-xs font-medium"
+                      />
                     </div>
                   </div>
                 ))}

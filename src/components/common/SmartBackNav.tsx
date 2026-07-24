@@ -23,7 +23,7 @@ export default function SmartBackNav() {
   }, [pathname, bookingPrefill]);
 
   // Only show on inner detail and booking pages
-  const shouldShow = pathname.startsWith("/booking") || pathname.startsWith("/packages/") || pathname.startsWith("/blog/");
+  const shouldShow = pathname.startsWith("/booking") || pathname.startsWith("/blog/");
   if (!shouldShow) return null;
 
   const handleBack = () => {

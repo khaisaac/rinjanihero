@@ -9,46 +9,12 @@ import {
   CalendarDays,
   Sparkles,
 } from "lucide-react";
+import * as Icons from "lucide-react";
+import { useCMSStore } from "@/store/cmsStore";
 
 export default function WhyChooseUs() {
-  const reasons = [
-    {
-      icon: Award,
-      title: "Experienced Local Guides",
-      description: "Our guides and porters are native to Senaru with 10+ years of climbing experience on Mount Rinjani.",
-      color: "from-[#18979B] to-[#13797C]",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Licensed Official Company",
-      description: "Fully registered and recognized by the Rinjani National Park office and Indonesian Ministry of Tourism.",
-      color: "from-[#D4A017] to-[#B8860B]",
-    },
-    {
-      icon: DollarSign,
-      title: "Best Price Guarantee",
-      description: "Direct operator rates with zero middleman agency fees or hidden costs. Deposit only 30% to secure your dates.",
-      color: "from-[#18979B] to-[#13797C]",
-    },
-    {
-      icon: HeartPulse,
-      title: "Safety First Standards",
-      description: "Every trek is equipped with emergency oxygen cylinders, first aid kits, and guides certified in mountain wilderness rescue.",
-      color: "from-[#D4A017] to-[#B8860B]",
-    },
-    {
-      icon: Utensils,
-      title: "Gourmet Mountain Dining",
-      description: "Enjoy 3 freshly cooked, nutritious hot meals per day + tropical fruit platters, banana pancakes, tea, and Lombok coffee.",
-      color: "from-[#18979B] to-[#13797C]",
-    },
-    {
-      icon: CalendarDays,
-      title: "Flexible Rescheduling",
-      description: "Plans changed? Modify your trekking dates 100% free of charge with at least 7 days notice.",
-      color: "from-[#D4A017] to-[#B8860B]",
-    },
-  ];
+  const { settings } = useCMSStore();
+  const reasons = settings.whyChooseUs || [];
 
   return (
     <section id="why-choose-us" className="py-20 lg:py-28 bg-white relative">
@@ -68,7 +34,7 @@ export default function WhyChooseUs() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {reasons.map((item, idx) => {
-            const IconComponent = item.icon;
+            const IconComponent = (Icons as any)[item.icon] || Icons.CheckCircle;
             return (
               <div
                 key={idx}

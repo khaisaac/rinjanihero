@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Settings, PhoneCall, Mail, MapPin, Check, ShieldCheck, Database, Save } from "lucide-react";
+import { Settings, PhoneCall, Mail, MapPin, Check, ShieldCheck, Database, Save, Star, Trash2 } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
@@ -16,6 +16,7 @@ export default function AdminSettingsPage() {
   const [phone, setPhone] = useState(settings.contactPhone);
   const [email, setEmail] = useState(settings.contactEmail);
   const [address, setAddress] = useState(settings.officeAddress || settings.address);
+  const [whyChooseUs, setWhyChooseUs] = useState(settings.whyChooseUs || []);
 
   const [savedMsg, setSavedMsg] = useState(false);
 
@@ -29,6 +30,7 @@ export default function AdminSettingsPage() {
       contactEmail: email,
       address,
       officeAddress: address,
+      whyChooseUs,
     });
     setSavedMsg(true);
     setTimeout(() => setSavedMsg(false), 3000);
@@ -115,6 +117,56 @@ export default function AdminSettingsPage() {
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Why Choose Us Section */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-100 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+            <h3 className="text-lg font-bold text-[#122826] flex items-center gap-2">
+              <Star className="w-5 h-5 text-[#18979B]" />
+              <span>Why Choose Us Reasons</span>
+            </h3>
+            <button
+              type="button"
+              onClick={() => setWhyChooseUs([...whyChooseUs, { id: Date.now().toString(), icon: "Star", title: "New Reason", description: "", color: "from-[#18979B] to-[#13797C]" }])}
+              className="text-xs bg-[#18979B] text-white font-bold px-3 py-1.5 rounded-xl hover:bg-[#13797C] transition"
+            >
+              + Add Reason
+            </button>
+          </div>
+          <div className="space-y-4">
+            {whyChooseUs.map((item, idx) => (
+              <div key={item.id} className="p-4 rounded-2xl bg-gray-50 border border-gray-200 relative">
+                <button
+                  type="button"
+                  onClick={() => setWhyChooseUs(whyChooseUs.filter((_, i) => i !== idx))}
+                  className="absolute top-4 right-4 text-red-500 hover:text-red-700 p-1"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mr-8">
+                   <div>
+                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Title</label>
+                     <input type="text" value={item.title} onChange={e => { const newArr = [...whyChooseUs]; newArr[idx].title = e.target.value; setWhyChooseUs(newArr); }} className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs font-bold text-[#122826] focus:outline-none focus:border-[#18979B]" />
+                   </div>
+                   <div>
+                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Icon Name (Lucide)</label>
+                     <input type="text" value={item.icon} onChange={e => { const newArr = [...whyChooseUs]; newArr[idx].icon = e.target.value; setWhyChooseUs(newArr); }} className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#18979B]" placeholder="e.g. Award, ShieldCheck" />
+                   </div>
+                   <div className="md:col-span-2">
+                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Description</label>
+                     <textarea value={item.description} onChange={e => { const newArr = [...whyChooseUs]; newArr[idx].description = e.target.value; setWhyChooseUs(newArr); }} rows={2} className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#18979B]" />
+                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="pt-4 border-t border-gray-100 flex justify-end">
+            <button onClick={handleSave} className="px-8 py-3.5 rounded-2xl bg-[#18979B] hover:bg-[#13797C] text-white font-extrabold text-sm transition flex items-center gap-2 shadow-md">
+              <Save className="w-4 h-4" />
+              <span>Save Reasons</span>
+            </button>
+          </div>
         </div>
 
         {/* National Park API Status Box */}
