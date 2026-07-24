@@ -219,8 +219,8 @@ export default function AdminBookingsPage() {
                     <span className="font-extrabold text-[#122826] text-base">{selectedBooking.customer.fullName}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 uppercase font-bold block text-[10px]">Nationality</span>
-                    <span className="font-bold text-gray-700">{selectedBooking.customer.nationality}</span>
+                    <span className="text-gray-400 uppercase font-bold block text-[10px]">Arrival Date</span>
+                    <span className="font-bold text-gray-700">{selectedBooking.customer.arrivalDate || "Not specified"}</span>
                   </div>
                   <div>
                     <span className="text-gray-400 uppercase font-bold block text-[10px]">Email</span>
@@ -230,15 +230,9 @@ export default function AdminBookingsPage() {
                     <span className="text-gray-400 uppercase font-bold block text-[10px]">WhatsApp</span>
                     <span className="font-semibold text-[#18979B]">{selectedBooking.customer.whatsapp}</span>
                   </div>
-                  <div>
-                    <span className="text-gray-400 uppercase font-bold block text-[10px]">Passport Number</span>
-                    <span className="font-mono font-bold bg-white px-2 py-0.5 rounded border inline-block mt-0.5">
-                      {selectedBooking.customer.passportNumber || "Not provided yet"}
-                    </span>
-                  </div>
-                  <div>
+                  <div className="col-span-2">
                     <span className="text-gray-400 uppercase font-bold block text-[10px]">Pickup Location</span>
-                    <span className="font-semibold text-gray-700">{selectedBooking.customer.pickupLocation}</span>
+                    <span className="font-semibold text-gray-700">{selectedBooking.customer.pickupLocation || "TBD"}</span>
                   </div>
                 </div>
 
@@ -255,9 +249,17 @@ export default function AdminBookingsPage() {
                       <span>• Extra Porters: {selectedBooking.participants.extraPorters}</span>
                       <span>• Private VIP Guide: {selectedBooking.participants.privateGuide ? "YES" : "NO"}</span>
                     </div>
-                    {selectedBooking.customer.dietaryNotes && (
+                    {selectedBooking.customer.membersDataText && (
+                      <div className="pt-2 border-t">
+                        <span className="text-gray-400 uppercase font-bold block text-[10px] mb-1">Members Data & Special Requests</span>
+                        <pre className="whitespace-pre-wrap font-sans text-xs bg-white p-3 rounded-xl border border-gray-100 text-gray-700">
+                          {selectedBooking.customer.membersDataText}
+                        </pre>
+                      </div>
+                    )}
+                    {selectedBooking.customer.orderNote && (
                       <div className="pt-2 border-t text-amber-800 bg-amber-50 p-2 rounded-xl text-xs">
-                        ⚠️ Dietary Notes: {selectedBooking.customer.dietaryNotes}
+                        ⚠️ Order Note: {selectedBooking.customer.orderNote}
                       </div>
                     )}
                   </div>

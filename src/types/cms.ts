@@ -187,28 +187,15 @@ export interface BookingOrder {
     children: number;
     extraPorters: number;
     privateGuide: boolean;
-    additionalTravelers?: {
-      fullName: string;
-      nationality: string;
-      passportNumber?: string;
-      birthday?: string;
-      height?: string;
-      weight?: string;
-      dietaryNotes?: string;
-    }[];
   };
   customer: {
     fullName: string;
     email: string;
-    phone: string;
     whatsapp: string;
-    nationality: string;
-    passportNumber?: string;
-    birthday?: string;
-    height?: string;
-    weight?: string;
-    dietaryNotes?: string;
     pickupLocation?: string;
+    membersDataText?: string;
+    arrivalDate?: string;
+    orderNote?: string;
   };
   pricing: {
     basePricePerPerson: number;

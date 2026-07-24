@@ -1159,12 +1159,11 @@ export const initialBookings: BookingOrder[] = [
     customer: {
       fullName: "Alex & Mia Harrison",
       email: "alex.harrison2026@gmail.com",
-      phone: "+1 415 889 2031",
       whatsapp: "+1 415 889 2031",
-      nationality: "United States",
-      passportNumber: "C8291039",
-      dietaryNotes: "1x Vegetarian, no peanuts",
       pickupLocation: "Sheraton Senggigi Beach Resort, 06:00 AM",
+      membersDataText: "Member 1:\nName: Alex Harrison\nPassport: C8291039\nNationality: US\n\nMember 2:\nName: Mia Harrison\nPassport: C8291040\nNationality: US\n\nDietary: 1x Vegetarian, no peanuts",
+      arrivalDate: "2026-07-19",
+      orderNote: "Please ensure guide speaks fluent English.",
     },
     pricing: {
       basePricePerPerson: 235,
@@ -1206,11 +1205,11 @@ export const initialBookings: BookingOrder[] = [
     customer: {
       fullName: "Kenji Takahashi & Friends",
       email: "kenji.takahashi.jp@yahoo.co.jp",
-      phone: "+81 90 8829 3341",
       whatsapp: "+81 90 8829 3341",
-      nationality: "Japan",
-      dietaryNotes: "None",
       pickupLocation: "Lombok Airport (LOP) Arrival Hall 08:30 AM",
+      membersDataText: "Member 1:\nName: Kenji Takahashi\nNationality: Japan\n\nMember 2:\nName: Hiroshi Suzuki\nNationality: Japan\n\nMember 3:\nName: Yui Aragaki\nNationality: Japan\n\nDietary: None",
+      arrivalDate: "2026-07-24",
+      orderNote: "",
     },
     pricing: {
       basePricePerPerson: 175,
